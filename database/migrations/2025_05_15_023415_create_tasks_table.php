@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('internship_id')->constrained('internship_postings')->onDelete('cascade');
+        $table->uuid('id')->primary();
+        $table->uuid('intership_id');
+        $table->foreign('intership_id')->references('id')->on('internship_postings')->onDelete('cascade');
         $table->string('name');
         $table->text('description');
         $table->date('deadline');

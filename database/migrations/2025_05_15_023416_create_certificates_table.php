@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('certificates', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('application_id')->constrained('internship_applications')->onDelete('cascade');
+        $table->uuid('id')->primary();
+        $table->uuid('application_id');
+        $table->foreign('application_id')->references('id')->on('internship_applications')->onDelete('cascade');
         $table->string('file');
         $table->string('tanggal_terbit');
         $table->timestamps();

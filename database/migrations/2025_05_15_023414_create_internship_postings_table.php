@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('internship_postings', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('company_id')->constrained('company_profiles')->onDelete('cascade');
+        $table->uuid('id')->primary();
+        $table->uuid('company_id');
+        $table->foreign('company_id')->references('id')->on('company_profiles')->onDelete('cascade');
         $table->string('judul');
         $table->text('deskripsi');
         $table->integer('kuota');
@@ -23,7 +24,6 @@ return new class extends Migration
         $table->string('status');
         $table->timestamps();
     });
-
     }
 
     /**
