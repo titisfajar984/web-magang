@@ -74,7 +74,6 @@
           </button>
           <div class="flex items-center space-x-2">
             <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center uppercase">{{ substr(auth()->user()->name,0,1) }}</div>
-            <span class="text-gray-700">{{ auth()->user()->name }}</span>
           </div>
         </div>
       </nav>

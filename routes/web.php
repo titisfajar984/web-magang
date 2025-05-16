@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Perusahaan\InternshipPostingsController;
 use App\Http\Controllers\Perusahaan\ProfileController;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,14 @@ use App\Http\Controllers\Perusahaan\ProfileController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/test-email', function () {
+    Mail::raw('Tes kirim email berhasil!', function ($message) {
+        $message->to('your@email.com') // Ganti dengan email aktif kamu (atau dummy jika hanya ingin cek Mailtrap)
+                ->subject('Tes Email dari Laravel');
+    });
+
+    return 'Email berhasil dikirim!';
+});
 
 Route::get('/', function () {
     return view('auth.login');
@@ -28,6 +37,12 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
+
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::view('/index', 'admin.index')->name('index');
