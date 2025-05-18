@@ -52,7 +52,7 @@
             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 @error('role') border-red-500 @enderror" required>
             <option value="">Pilih Role</option>
             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-            <option value="perusahaan" {{ old('role') == 'perusahaan' ? 'selected' : '' }}>Perusahaan</option>
+            <option value="company" {{ old('role') == 'company' ? 'selected' : '' }}>Company</option>
           </select>
           @error('role')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
         </div>

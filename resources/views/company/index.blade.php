@@ -1,4 +1,4 @@
-@extends('layouts.perusahaan')
+@extends('layouts.company')
 
 @section('content')
 <div class="p-6">

@@ -32,8 +32,8 @@
                 @php
                     $roleColors = [
                     'admin' => 'bg-red-100 text-red-700',
-                    'perusahaan' => 'bg-green-100 text-green-700',
-                    'peserta' => 'bg-blue-100 text-blue-700',
+                    'company' => 'bg-green-100 text-green-700',
+                    'participant' => 'bg-blue-100 text-blue-700',
                     ];
                     $roleClass = $roleColors[strtolower($user->role)] ?? 'bg-gray-100 text-gray-700';
                 @endphp

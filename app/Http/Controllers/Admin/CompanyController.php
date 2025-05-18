@@ -17,7 +17,7 @@ class CompanyController extends Controller
 
     public function create()
     {
-        $users = User::where('role', 'perusahaan')->get();
+        $users = User::where('role', 'company')->get();
         return view('admin.company.create', compact('users'));
     }
 

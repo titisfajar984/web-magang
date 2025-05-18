@@ -23,22 +23,22 @@ class UserSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // Perusahaan
+        // Company
         User::create([
             'id' => Str::uuid(),
             'name' => 'Perusahaan User',
             'email' => 'perusahaan@example.com',
             'password' => Hash::make('password'),
-            'role' => 'perusahaan',
+            'role' => 'company',
         ]);
 
-        // Peserta
+        // Participant
         User::create([
             'id' => Str::uuid(),
             'name' => 'Peserta User',
             'email' => 'peserta@example.com',
             'password' => Hash::make('password'),
-            'role' => 'peserta',
+            'role' => 'participant',
         ]);
     }
 }

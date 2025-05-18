@@ -1,4 +1,4 @@
-@extends('layouts.perusahaan')
+@extends('layouts.company')
 
 @section('title', 'Detail Lowongan Magang')
 
@@ -15,7 +15,7 @@
     <p class="mb-3 text-gray-700"><strong>Periode Selesai:</strong> {{ \Carbon\Carbon::parse($internship->periode_selesai)->translatedFormat('d F Y') }}</p>
     <p class="mb-3 text-gray-700"><strong>Status:</strong> {{ ucfirst($internship->status) }}</p>
 
-    <a href="{{ route('perusahaan.internships.index') }}"
+    <a href="{{ route('company.internships.index') }}"
        class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
        Kembali
     </a>

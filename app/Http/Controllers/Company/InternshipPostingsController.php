@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Perusahaan;
+namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\InternshipPosting;
@@ -12,15 +12,24 @@ class InternshipPostingsController extends Controller
 {
     public function index()
     {
-        $postings = InternshipPosting::where('company_id', Auth::user()->companyProfile->id)
+        $user = Auth::user();
+        $companyProfile = $user->companyProfile;
+
+        if (!$companyProfile) {
+            return redirect()->route('company.profile.create')
+                ->with('error', 'Silakan lengkapi profil perusahaan terlebih dahulu.');
+        }
+
+        $postings = InternshipPosting::where('company_id', $companyProfile->id)
             ->latest()
             ->get();
-        return view('perusahaan.internships.index', compact('postings'));
+
+        return view('company.internships.index', compact('postings'));
     }
 
     public function create()
     {
-        return view('perusahaan.internships.create');
+        return view('company.internships.create');
     }
 
     public function store(Request $request)
@@ -47,16 +56,15 @@ class InternshipPostingsController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('perusahaan.internships.index')->with('success', 'Lowongan berhasil dibuat.');
+        return redirect()->route('company.internships.index')->with('success', 'Lowongan berhasil dibuat.');
     }
 
     public function show(InternshipPosting $internship)
     {
-        // Pastikan perusahaan hanya bisa melihat postingannya sendiri
         if ($internship->company_id !== Auth::user()->companyProfile->id) {
             abort(403);
         }
-        return view('perusahaan.internships.show', compact('internship'));
+        return view('company.internships.show', compact('internship'));
     }
 
     public function edit(InternshipPosting $internship)
@@ -64,7 +72,7 @@ class InternshipPostingsController extends Controller
         if ($internship->company_id !== Auth::user()->companyProfile->id) {
             abort(403);
         }
-        return view('perusahaan.internships.edit', compact('internship'));
+        return view('company.internships.edit', compact('internship'));
     }
 
     public function update(Request $request, InternshipPosting $internship)
@@ -87,7 +95,7 @@ class InternshipPostingsController extends Controller
             'judul', 'deskripsi', 'kuota', 'lokasi', 'periode_mulai', 'periode_selesai', 'status'
         ]));
 
-        return redirect()->route('perusahaan.internships.index')->with('success', 'Lowongan berhasil diperbarui.');
+        return redirect()->route('company.internships.index')->with('success', 'Lowongan berhasil diperbarui.');
     }
 
     public function destroy(InternshipPosting $internship)
@@ -97,6 +105,6 @@ class InternshipPostingsController extends Controller
         }
 
         $internship->delete();
-        return redirect()->route('perusahaan.internships.index')->with('success', 'Lowongan berhasil dihapus.');
+        return redirect()->route('company.internships.index')->with('success', 'Lowongan berhasil dihapus.');
     }
 }

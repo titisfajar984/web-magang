@@ -38,17 +38,17 @@
       </div>
       <ul class="space-y-2 px-4">
         <li>
-            <a href="{{ route('perusahaan.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('perusahaan.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+            <a href="{{ route('company.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
                 <i data-feather="home" class="w-5 h-5 mr-3"></i> Dashboard
             </a>
         </li>
         <li>
-            <a href="{{ route('perusahaan.internships.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('perusahaan.internships.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+            <a href="{{ route('company.internships.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.internships.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
                 <i data-feather="user-check" class="w-5 h-5 mr-3"></i> Lowongan
             </a>
         </li>
         <li>
-            <a href="{{ route('perusahaan.profile.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('perusahaan.profile.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+            <a href="{{ route('company.profile.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.profile.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
                 <i data-feather="user-check" class="w-5 h-5 mr-3"></i> Profil
             </a>
         </li>
@@ -73,7 +73,17 @@
             <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
           <div class="flex items-center space-x-2">
-            <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center uppercase">{{ substr(auth()->user()->name,0,1) }}</div>
+            @php
+                $company = \App\Models\CompanyProfile::where('user_id', auth()->id())->first();
+            @endphp
+
+            @if ($company && $company->logo)
+                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo Perusahaan" class="w-8 h-8 rounded-full object-cover">
+            @else
+                <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center uppercase">
+                    {{ substr(auth()->user()->name,0,1) }}
+                </div>
+            @endif
           </div>
         </div>
       </nav>

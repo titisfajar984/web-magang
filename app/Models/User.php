@@ -48,4 +48,8 @@ class User extends Authenticatable
         return $this->hasOne(CompanyProfile::class, 'user_id');
     }
 
+    public function participantProfile()
+    {
+        return $this->hasOne(ParticipantProfile::class, 'user_id');
+    }
 }

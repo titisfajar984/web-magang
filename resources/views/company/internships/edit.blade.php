@@ -1,4 +1,4 @@
-@extends('layouts.perusahaan')
+@extends('layouts.company')
 
 @section('title', 'Edit Lowongan Magang')
 
@@ -10,7 +10,7 @@
   </div>
 
   <div class="bg-white rounded-lg shadow p-6">
-    <form action="{{ route('perusahaan.internships.update', $internship->id) }}" method="POST" class="space-y-6">
+    <form action="{{ route('company.internships.update', $internship->id) }}" method="POST" class="space-y-6">
       @csrf
       @method('PUT')
 
@@ -73,7 +73,7 @@
       </div>
 
       <div class="text-right">
-        <a href="{{ route('perusahaan.internships.index') }}" class="px-6 py-2 mr-3 bg-gray-500 text-white rounded hover:bg-gray-600">Batal</a>
+        <a href="{{ route('company.internships.index') }}" class="px-6 py-2 mr-3 bg-gray-500 text-white rounded hover:bg-gray-600">Batal</a>
         <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           <i data-feather="save" class="w-4 h-4 inline mr-1"></i> Perbarui Lowongan
         </button>

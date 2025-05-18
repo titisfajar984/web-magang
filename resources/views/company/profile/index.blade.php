@@ -1,6 +1,6 @@
-@extends('layouts.perusahaan')
+@extends('layouts.company')
 
-@section('title', 'Profil Perusahaan')
+@section('title', 'Profil')
 
 @section('content')
 <div class="bg-white shadow rounded-lg p-8 w-full">
@@ -10,14 +10,14 @@
         </div>
     @endif
 
-    <h1 class="text-3xl font-semibold text-gray-800 mb-8">Profil Perusahaan</h1>
+    <h1 class="text-3xl font-semibold text-gray-800 mb-8">Profil</h1>
+    <form action="{{ route('company.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
 
-    <form action="{{ route('perusahaan.profile.update') }}" method="POST" class="space-y-6">
         @csrf
         @method('PUT')
 
         <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">Nama Perusahaan</label>
+            <label for="name" class="block text-sm font-medium text-gray-700">Nama company</label>
             <input type="text" id="name" name="name" value="{{ old('name', $company->name) }}" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
@@ -33,6 +33,20 @@
             <input type="text" id="alamat" name="alamat" value="{{ old('alamat', $company->alamat) }}" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             @error('alamat') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
+
+        <div>
+            <label for="logo" class="block text-sm font-medium text-gray-700">Logo company</label>
+            <input type="file" id="logo" name="logo" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2">
+            @error('logo') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+        </div>
+                @if ($company->logo)
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Logo Saat Ini:</p>
+                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo company" class="h-20">
+            </div>
+        @endif
+
+
 
         <div class="pt-4">
             <button type="submit" class="inline-flex items-center bg-blue-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-blue-700 transition">

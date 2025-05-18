@@ -35,5 +35,10 @@ class InternshipPosting extends Model
     {
         return $this->belongsTo(CompanyProfile::class, 'company_id');
     }
+
+    public function participants()
+    {
+        return $this->hasMany(ParticipantProfile::class, 'internship_id');
+    }
 }
 

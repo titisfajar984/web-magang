@@ -15,10 +15,18 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('university');
-            $table->string('program_studi');
+
+            $table->string('no_telepon', 20)->nullable();
+            $table->string('alamat')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan'])->nullable();
+            $table->string('university')->nullable();
+            $table->string('program_studi')->nullable();
+            $table->string('portofolio')->nullable();
             $table->string('foto')->nullable();
-            $table->json('cv')->nullable();
+            $table->string('cv')->nullable();
+            $table->decimal('transkrip', 3, 2)->nullable();
+
             $table->timestamps();
         });
     }

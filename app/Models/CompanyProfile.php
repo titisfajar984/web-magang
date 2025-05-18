@@ -15,7 +15,7 @@ class CompanyProfile extends Model
     protected $keyType = 'uuid';
 
     protected $fillable = [
-        'id', 'user_id', 'name', 'deskripsi', 'alamat',
+        'id', 'user_id', 'name', 'deskripsi', 'alamat', 'logo'
     ];
 
     protected static function boot()

@@ -27,7 +27,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $role = Auth::user()->role;
 
-            return redirect()->route($role . '.index'); // misal: peserta.index, admin.index
+            return redirect()->route($role . '.index');
         }
 
         return redirect()->back()->withErrors([
@@ -60,12 +60,12 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => 'Peserta', // default role
+            'role'     => 'participant', // default role
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('peserta.index');
+        return redirect()->route('participant.index');
     }
 
     public function showForgotPasswordForm()

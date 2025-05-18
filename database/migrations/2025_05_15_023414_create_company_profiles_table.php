@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('deskripsi');
             $table->string('alamat');
+            $table->string('logo')->nullable();
             $table->timestamps();
     });
     }

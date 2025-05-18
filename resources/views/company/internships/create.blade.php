@@ -1,4 +1,4 @@
-@extends('layouts.perusahaan')
+@extends('layouts.company')
 
 @section('title', 'Tambah Lowongan Magang')
 
@@ -10,7 +10,7 @@
   </div>
 
   <div class="bg-white rounded-lg shadow p-6">
-    <form action="{{ route('perusahaan.internships.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('company.internships.store') }}" method="POST" class="space-y-6">
       @csrf
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -60,7 +60,7 @@
       </div>
 
       <div class="text-right">
-        <a href="{{ route('perusahaan.internships.index') }}" class="px-6 py-2 mr-3 bg-gray-500 text-white rounded hover:bg-gray-600">Batal</a>
+        <a href="{{ route('company.internships.index') }}" class="px-6 py-2 mr-3 bg-gray-500 text-white rounded hover:bg-gray-600">Batal</a>
         <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           <i data-feather="save" class="w-4 h-4 inline mr-1"></i> Simpan Lowongan
         </button>
