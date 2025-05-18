@@ -6,27 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('internship_applications', function (Blueprint $table) {
-        $table->uuid('id')->primary();
-        $table->uuid('participant_id');
-        $table->foreign('participant_id')->references('id')->on('participant_profiles')->onDelete('cascade');
-        $table->uuid('internship_posting_id');
-        $table->foreign('internship_posting_id')->references('id')->on('internship_postings')->onDelete('cascade');
-        $table->enum('status', ['Pending', 'Accepted', 'Rejected']);
-        $table->date('tanggal');
-        $table->timestamps();
-    });
+            $table->uuid('id')->primary();
 
+            $table->foreignUuid('participant_id')
+                ->constrained('participant_profiles')
+                ->cascadeOnDelete();
+
+            $table->foreignUuid('internship_posting_id')
+                ->constrained('internship_postings')
+                ->cascadeOnDelete();
+
+            $table->enum('status', ['Pending', 'Accepted', 'Rejected']);
+            $table->date('tanggal');
+            $table->timestamps();
+
+            // Opsional, jika butuh index gabungan dan ingin aman:
+            // $table->index(['participant_id', 'internship_posting_id'], 'app_participant_posting_idx');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('internship_applications');

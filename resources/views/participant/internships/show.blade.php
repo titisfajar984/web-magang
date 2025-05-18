@@ -24,7 +24,7 @@
                         <h1 class="text-2xl font-bold text-gray-900">{{ $intern->company->name }}</h1>
                         <p class="text-gray-600 mt-1">
                             <i class="fas fa-map-marker-alt mr-2"></i>
-                            {{ $intern->company->alamat }}
+                            {{ $intern->company->address }}
                         </p>
                     </div>
                 </div>
@@ -34,15 +34,15 @@
             <div class="p-8">
                 <!-- Title Section -->
                 <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ $intern->judul }}</h2>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ $intern->title }}</h2>
                     <div class="flex items-center gap-4 text-gray-600">
                         <span class="flex items-center">
                             <i class="fas fa-clock mr-2"></i>
-                            {{ \Carbon\Carbon::parse($intern->periode_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($intern->periode_selesai)->format('d M Y') }}
+                            {{ \Carbon\Carbon::parse($intern->start_date)->format('d M Y') }} - {{ \Carbon\Carbon::parse($intern->end_date)->format('d M Y') }}
                         </span>
                         <span class="flex items-center">
                             <i class="fas fa-users mr-2"></i>
-                            Kuota: {{ $intern->kuota }} participant
+                            Kuota: {{ $intern->quota }}
                         </span>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                 <!-- Status Badge -->
                 <div class="mb-8">
                     <span class="px-4 py-2 rounded-full text-sm font-medium
-                              {{ $intern->status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                              {{ $intern->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                         {{ ucfirst($intern->status) }}
                     </span>
                 </div>
@@ -58,14 +58,14 @@
                 <!-- Description -->
                 <div class="prose max-w-none mb-8">
                     <h3 class="text-xl font-semibold text-gray-900 mb-4">Deskripsi Magang</h3>
-                    {!! nl2br(e($intern->deskripsi)) !!}
+                    {!! nl2br(e($intern->description)) !!}
                 </div>
 
                 <!-- Company Info -->
                 <div class="bg-gray-50 rounded-lg p-6">
                     <h3 class="text-xl font-semibold text-gray-900 mb-4">Tentang Perusahaan</h3>
                     <div class="prose max-w-none">
-                        {{ $intern->company->deskripsi ?? 'Tidak ada deskripsi perusahaan' }}
+                        {{ $intern->company->description ?? 'Tidak ada deskripsi perusahaan' }}
                     </div>
                 </div>
 

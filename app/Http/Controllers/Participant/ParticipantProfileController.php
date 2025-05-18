@@ -3,58 +3,74 @@
 namespace App\Http\Controllers\Participant;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\ParticipantProfile;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class ParticipantProfileController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $participant = Auth::user()->participantProfile;
+        $participant = ParticipantProfile::firstOrCreate(
+            ['user_id' => auth()->id()],
+            [
+                'phone_number' => '',
+                'address' => '',
+                'birth_date' => null,
+                'gender' => null,
+                'university' => '',
+                'study_program' => '',
+                'portfolio_url' => '',
+                'photo' => null,
+                'cv' => null,
+                'gpa' => null,
+            ]
+        );
+
         return view('participant.profile.index', compact('participant'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
-        $participant = Auth::user()->participantProfile;
-
-        if (!$participant) {
-            $participant = Auth::user()->participantProfile()->create([]);
-        }
-
-        $request->validate([
-            'no_telepon' => 'required|string|max:20',
-            'alamat' => 'required|string|max:255',
-            'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+        $validated = $request->validate([
+            'phone_number' => 'required|string|max:20',
+            'address' => 'required|string|max:255',
+            'birth_date' => 'nullable|date',
+            'gender' => 'nullable|in:male,female',
             'university' => 'nullable|string|max:255',
-            'program_studi' => 'nullable|string|max:255',
+            'study_program' => 'nullable|string|max:255',
+            'portfolio_url' => 'nullable|url|max:255',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'transkrip' => 'nullable|numeric|between:0,4',
-            'portofolio' => 'nullable|string|max:255',
+            'gpa' => 'nullable|numeric|between:0,4',
         ]);
 
-        $data = $request->only([
-            'no_telepon', 'alamat', 'tanggal_lahir', 'jenis_kelamin',
-            'university', 'program_studi', 'transkrip', 'portofolio'
-        ]);
+        // Ambil profil peserta, jika tidak ada buat baru
+        $participant = ParticipantProfile::firstOrCreate(
+            ['user_id' => auth()->id()],
+            []
+        );
+
+        if ($request->hasFile('photo')) {
+            if ($participant->photo) {
+                Storage::disk('public')->delete($participant->photo);
+            }
+            $validated['photo'] = $request->file('photo')->store('participants/photos', 'public');
+        }
 
         if ($request->hasFile('cv')) {
-            if ($participant->cv) Storage::disk('public')->delete($participant->cv);
-            $data['cv'] = $request->file('cv')->store('participants/cv', 'public');
+            if ($participant->cv) {
+                Storage::disk('public')->delete($participant->cv);
+            }
+            $validated['cv'] = $request->file('cv')->store('participants/cvs', 'public');
         }
 
-        if ($request->hasFile('foto')) {
-            if ($participant->foto) Storage::disk('public')->delete($participant->foto);
-            $data['foto'] = $request->file('foto')->store('participants/foto', 'public');
-        }
+        $participant->update($validated);
 
-        $participant->update($data);
-
-        return redirect()->route('participant.profile.index')->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('participant.profile.index')
+            ->with('success', 'Profil berhasil diperbarui');
     }
 }
+

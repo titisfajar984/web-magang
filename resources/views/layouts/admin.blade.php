@@ -2,32 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title') - {{ config('app.name', 'Magang Berdampak') }}</title>
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Flowbite -->
-  <link href="https://unpkg.com/flowbite@1.7.0/dist/flowbite.min.css" rel="stylesheet" />
-  <!-- Poppins Font -->
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/flowbite@1.7.0/dist/flowbite.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] } } }
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
     }
-  </script>
-  <style>body { font-family: 'Poppins', sans-serif; }</style>
+  </style>
 </head>
 <body class="bg-gray-100">
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-lg">
-    <div class="p-6 flex items-center space-x-3">
+      <div class="p-6 flex items-center space-x-3">
         <div class="bg-blue-600 text-white p-2 rounded-lg">
-            <i data-feather="briefcase" class="w-6 h-6"></i>
+          <i data-feather="briefcase" class="w-6 h-6"></i>
         </div>
         <h1 class="text-xl font-semibold text-gray-800">Magang Berdampak</h1>
-    </div>
+      </div>
+
       <ul class="space-y-2 px-4">
         @php
           $menus = [
@@ -36,6 +35,7 @@
             ['route' => 'admin.company.index','icon' => 'briefcase','label' => 'Company'],
           ];
         @endphp
+
         @foreach($menus as $item)
           <li>
             <a href="{{ route($item['route']) }}"
@@ -45,6 +45,7 @@
             </a>
           </li>
         @endforeach
+
         <li class="pt-4 border-t border-gray-200 mt-4">
           <form action="{{ route('logout') }}" method="POST">
             @csrf
@@ -78,6 +79,18 @@
 
       <!-- Page Content -->
       <main class="flex-1 overflow-auto p-6">
+        @if(session('success'))
+          <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+            {{ session('success') }}
+          </div>
+        @endif
+
+        @if(session('error'))
+          <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            {{ session('error') }}
+          </div>
+        @endif
+
         @yield('content')
       </main>
     </div>
@@ -86,6 +99,8 @@
   <!-- Scripts -->
   <script src="https://unpkg.com/flowbite@1.7.0/dist/flowbite.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
-  <script>feather.replace()</script>
+  <script>
+    feather.replace();
+  </script>
 </body>
 </html>

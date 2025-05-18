@@ -6,25 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('certificates', function (Blueprint $table) {
-        $table->uuid('id')->primary();
-        $table->uuid('application_id');
-        $table->foreign('application_id')->references('id')->on('internship_applications')->onDelete('cascade');
-        $table->string('file');
-        $table->string('tanggal_terbit');
-        $table->timestamps();
-    });
+            $table->uuid('id')->primary();
 
+            $table->foreignUuid('application_id')
+                ->constrained('internship_applications')
+                ->cascadeOnDelete();
+
+            $table->string('file');
+            $table->date('tanggal_terbit');
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('application_id');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('certificates');

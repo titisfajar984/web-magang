@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InternshipPosting;
 use App\Models\CompanyProfile;
-use App\Models\IntershipsApplication;
+use App\Models\InternshipApplication;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,14 +18,21 @@ class ParticipantIntershipsController extends Controller
         $companies = CompanyProfile::orderBy('name')->get();
 
         $query = InternshipPosting::with('company')
-            ->where('status', 'aktif');
+            ->where('status', 'active');
 
+        // Filter perusahaan
         if ($request->filled('company_id')) {
             $query->where('company_id', $request->company_id);
         }
 
-        if ($request->filled('periode_start') && $request->filled('periode_end')) {
-            $query->whereBetween('periode_mulai', [$request->periode_start, $request->periode_end]);
+        // Filter lokasi (location)
+        if ($request->filled('location')) {
+            $query->where('location', 'like', '%' . $request->location . '%');
+        }
+
+        // Filter kuota (quota), misal mencari kuota minimal tertentu
+        if ($request->filled('quota')) {
+            $query->where('quota', '>=', (int) $request->quota);
         }
 
         $interns = $query->orderBy('created_at', 'desc')->paginate(10)->appends($request->query());
@@ -37,7 +44,7 @@ class ParticipantIntershipsController extends Controller
     {
         $intern = InternshipPosting::with('company')->findOrFail($id);
         $participantProfile = Auth::user()->participantProfile;
-        $alreadyApplied = IntershipsApplication::where('internship_posting_id', $intern->id)
+        $alreadyApplied = InternshipApplication::where('internship_posting_id', $intern->id)
             ->where('participant_id', $participantProfile->id)
             ->exists();
 
@@ -54,7 +61,7 @@ class ParticipantIntershipsController extends Controller
                 ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
 
-        $existingApplication = IntershipsApplication::where([
+        $existingApplication = InternshipApplication::where([
             'participant_id' => $participantProfile->id,
             'internship_posting_id' => $id
         ])->exists();
@@ -64,7 +71,7 @@ class ParticipantIntershipsController extends Controller
                 ->with('error', 'Anda sudah apply intern ini sebelumnya.');
         }
 
-        IntershipsApplication::create([
+        InternshipApplication::create([
             'id' => (string) Str::uuid(),
             'participant_id' => $participantProfile->id,
             'internship_posting_id' => $id,
@@ -86,7 +93,7 @@ class ParticipantIntershipsController extends Controller
                 ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
 
-        $applications = IntershipsApplication::with(['internship.company'])
+        $applications = InternshipApplication::with(['internship.company'])
             ->where('participant_id', $participantProfile->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);

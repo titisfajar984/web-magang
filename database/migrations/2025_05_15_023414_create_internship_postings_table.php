@@ -6,29 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('internship_postings', function (Blueprint $table) {
-        $table->uuid('id')->primary();
-        $table->uuid('company_id');
-        $table->foreign('company_id')->references('id')->on('company_profiles')->onDelete('cascade');
-        $table->string('judul');
-        $table->text('deskripsi');
-        $table->integer('kuota');
-        $table->string('lokasi');
-        $table->string('periode_mulai');
-        $table->string('periode_selesai');
-        $table->string('status');
-        $table->timestamps();
-    });
+            $table->uuid('id')->primary();
+            $table->foreignUuid('company_id')
+                ->constrained('company_profiles')
+                ->cascadeOnDelete();
+
+            $table->string('title', 255);
+            $table->text('description');
+            $table->unsignedInteger('quota');
+            $table->string('location', 255);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->enum('status', ['active', 'inactive'])->default('active');
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['company_id', 'status']);
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('internship_postings');

@@ -51,7 +51,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $lamar->internship->judul }}</div>
+                                <div class="text-sm text-gray-900">{{ $lamar->internship->title }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($lamar->tanggal)->format('d M Y') }}</div>

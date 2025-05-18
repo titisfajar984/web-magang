@@ -1,58 +1,80 @@
 @extends('layouts.company')
 
-@section('title', 'Profil')
+@section('title', 'Profil Perusahaan')
 
 @section('content')
-<div class="bg-white shadow rounded-lg p-8 w-full">
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-200 text-green-700 p-4 rounded mb-6">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <h1 class="text-3xl font-semibold text-gray-800 mb-8">Profil</h1>
-    <form action="{{ route('company.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-
-        @csrf
-        @method('PUT')
-
-        <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">Nama company</label>
-            <input type="text" id="name" name="name" value="{{ old('name', $company->name) }}" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-            @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        <div>
-            <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
-            <textarea id="deskripsi" name="deskripsi" rows="5" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>{{ old('deskripsi', $company->deskripsi) }}</textarea>
-            @error('deskripsi') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        <div>
-            <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
-            <input type="text" id="alamat" name="alamat" value="{{ old('alamat', $company->alamat) }}" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-            @error('alamat') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        <div>
-            <label for="logo" class="block text-sm font-medium text-gray-700">Logo company</label>
-            <input type="file" id="logo" name="logo" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2">
-            @error('logo') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
-                @if ($company->logo)
-            <div class="mb-4">
-                <p class="text-sm text-gray-600 mb-2">Logo Saat Ini:</p>
-                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo company" class="h-20">
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        @if(session('success'))
+            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
+                {{ session('success') }}
             </div>
         @endif
 
+        <h1 class="text-2xl font-bold mb-6">Profil Perusahaan</h1>
 
+        <form method="POST" action="{{ route('company.profile.update') }}" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
 
-        <div class="pt-4">
-            <button type="submit" class="inline-flex items-center bg-blue-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+            <div class="grid gap-6 mb-6">
+                <div>
+                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900">
+                        Nama Perusahaan
+                    </label>
+                    <input type="text" id="name" name="name" value="{{ old('name', $company->name) }}"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    @error('name')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="description" class="block mb-2 text-sm font-medium text-gray-900">
+                        Deskripsi
+                    </label>
+                    <textarea id="description" name="description" rows="4"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">{{ old('description', $company->description) }}</textarea>
+                    @error('description')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="address" class="block mb-2 text-sm font-medium text-gray-900">
+                        Alamat
+                    </label>
+                    <input type="text" id="address" name="address" value="{{ old('address', $company->address) }}"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    @error('address')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="logo" class="block mb-2 text-sm font-medium text-gray-900">
+                        Logo Perusahaan
+                    </label>
+                    <input type="file" id="logo" name="logo"
+                        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    @error('logo')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                @if($company->logo)
+                    <div class="mt-2">
+                        <span class="block text-sm font-medium text-gray-700 mb-1">Logo Saat Ini:</span>
+                        <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo Perusahaan" class="h-20">
+                    </div>
+                @endif
+            </div>
+
+            <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                 Simpan Perubahan
             </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 @endsection

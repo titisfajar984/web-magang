@@ -2,34 +2,42 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ParticipantProfile extends Model
 {
-    use HasFactory;
-    protected $table = 'participant_profiles';
+    use HasFactory, HasUuids, SoftDeletes;
+
+    protected $keyType = 'string';
     public $incrementing = false;
-    protected $keyType = 'uuid';
+
     protected $fillable = [
-        'id', 'user_id', 'no_telepon', 'alamat', 'tanggal_lahir', 'jenis_kelamin', 'university', 'program_studi', 'foto', 'cv', 'transkrip', 'portofolio'
+        'id',
+        'user_id',
+        'phone_number',
+        'address',
+        'birth_date',
+        'gender',
+        'university',
+        'study_program',
+        'portfolio_url',
+        'photo',
+        'cv',
+        'gpa',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = (string) \Illuminate\Support\Str::uuid();
-        });
-    }
-
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function applications()
+    public function applications(): HasMany
     {
-        return $this->hasMany(IntershipsApplication::class, 'participant_id');
+        return $this->hasMany(InternshipApplication::class, 'participant_id');
     }
 }

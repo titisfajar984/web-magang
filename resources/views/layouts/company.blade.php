@@ -1,29 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield('title') - {{ config('app.name', 'Rumah Sakit') }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@yield('title') - {{ config('app.name', 'Magang Berdampak') }}</title>
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Flowbite (Tailwind Components) -->
-  <link rel="stylesheet" href="https://unpkg.com/flowbite@1.7.0/dist/flowbite.min.css" />
-  <!-- Poppins Font -->
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/flowbite@1.7.0/dist/flowbite.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Poppins', 'sans-serif'] }
-        }
-      },
-      plugins: [
-        // Flowbite plugin if using CLI build
-      ]
-    }
-  </script>
   <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
 <body class="bg-gray-100">
@@ -38,31 +23,32 @@
       </div>
       <ul class="space-y-2 px-4">
         <li>
-            <a href="{{ route('company.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-                <i data-feather="home" class="w-5 h-5 mr-3"></i> Dashboard
-            </a>
+          <a href="{{ route('company.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+            <i data-feather="home" class="w-5 h-5 mr-3"></i> Dashboard
+          </a>
         </li>
         <li>
-            <a href="{{ route('company.internships.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.internships.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-                <i data-feather="user-check" class="w-5 h-5 mr-3"></i> Lowongan
-            </a>
+          <a href="{{ route('company.internships.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.internships.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+            <i data-feather="briefcase" class="w-5 h-5 mr-3"></i> Lowongan
+          </a>
         </li>
         <li>
-            <a href="{{ route('company.profile.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.profile.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-                <i data-feather="user-check" class="w-5 h-5 mr-3"></i> Profil
-            </a>
+          <a href="{{ route('company.profile.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.profile.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+            <i data-feather="user" class="w-5 h-5 mr-3"></i> Profil
+          </a>
         </li>
         <li class="pt-4 border-t border-gray-200 mt-4">
-            <form action="{{ route('logout') }}" method="POST">
+          <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="w-full flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-600 hover:text-red-600 transition">
-                <i data-feather="log-out" class="w-5 h-5 mr-3"></i> Logout
+              <i data-feather="log-out" class="w-5 h-5 mr-3"></i> Logout
             </button>
-            </form>
+          </form>
         </li>
       </ul>
     </aside>
-    <!-- Main -->
+
+    <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Navbar -->
       <nav class="bg-white shadow flex items-center justify-between px-6 py-4">
@@ -72,27 +58,29 @@
             <i data-feather="bell" class="w-6 h-6 text-gray-600"></i>
             <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
+          @php
+            $company = \App\Models\CompanyProfile::where('user_id', auth()->id())->first();
+          @endphp
           <div class="flex items-center space-x-2">
-            @php
-                $company = \App\Models\CompanyProfile::where('user_id', auth()->id())->first();
-            @endphp
-
             @if ($company && $company->logo)
-                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo Perusahaan" class="w-8 h-8 rounded-full object-cover">
+              <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo Perusahaan" class="w-8 h-8 rounded-full object-cover">
             @else
-                <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center uppercase">
-                    {{ substr(auth()->user()->name,0,1) }}
-                </div>
+              <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center uppercase">
+                {{ substr(auth()->user()->name, 0, 1) }}
+              </div>
             @endif
           </div>
         </div>
       </nav>
-      <!-- Content -->
+
+      <!-- Page Content -->
       <main class="flex-1 overflow-auto p-6">
         @yield('content')
       </main>
     </div>
   </div>
+
+  <!-- JS -->
   <script src="https://unpkg.com/flowbite@1.7.0/dist/flowbite.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
   <script>feather.replace()</script>

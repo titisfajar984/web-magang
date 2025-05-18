@@ -4,40 +4,43 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\CompanyProfile;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $company = CompanyProfile::where('user_id', Auth::id())->firstOrFail();
+        $company = CompanyProfile::where('user_id', auth()->id())->firstOrFail();
         return view('company.profile.index', compact('company'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
-        $company = CompanyProfile::where('user_id', Auth::id())->firstOrFail();
-
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'alamat' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'description' => 'required|string|max:2000',
+            'address' => 'required|string|max:500',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->only('name', 'deskripsi', 'alamat');
+        $company = CompanyProfile::where('user_id', auth()->id())->firstOrFail();
 
-        // handle file upload
         if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $filename = time().'_'.$logo->getClientOriginalName();
-            $path = $logo->storeAs('logos', $filename, 'public');
-            $data['logo'] = $path;
+            // Delete old logo if exists
+            if ($company->logo) {
+                Storage::disk('public')->delete($company->logo);
+            }
+
+            $path = $request->file('logo')->store('company/logos', 'public');
+            $validated['logo'] = $path;
         }
 
-        $company->update($data);
+        $company->update($validated);
 
-        return redirect()->route('company.profile.index')->with('success', 'Profil perusahaan berhasil diperbarui.');
+        return redirect()->route('company.profile.index')
+            ->with('success', 'Profil perusahaan berhasil diperbarui');
     }
 }

@@ -4,107 +4,96 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\InternshipPosting;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class InternshipPostingsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $user = Auth::user();
-        $companyProfile = $user->companyProfile;
+        $companyProfile = auth()->user()->companyProfile;
+        abort_unless($companyProfile, 403, 'Please complete your company profile first');
 
-        if (!$companyProfile) {
-            return redirect()->route('company.profile.create')
-                ->with('error', 'Silakan lengkapi profil perusahaan terlebih dahulu.');
-        }
-
-        $postings = InternshipPosting::where('company_id', $companyProfile->id)
+        $postings = InternshipPosting::query()
+            ->where('company_id', $companyProfile->id)
             ->latest()
             ->get();
 
         return view('company.internships.index', compact('postings'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('company.internships.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'kuota' => 'required|integer|min:1',
-            'lokasi' => 'required|string|max:255',
-            'periode_mulai' => 'required|date',
-            'periode_selesai' => 'required|date|after_or_equal:periode_mulai',
-            'status' => 'required|in:aktif,nonaktif',
-        ]);
+        $validated = $request->validate($this->validationRules());
 
         InternshipPosting::create([
-            'id' => (string) Str::uuid(),
-            'company_id' => Auth::user()->companyProfile->id,
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-            'kuota' => $request->kuota,
-            'lokasi' => $request->lokasi,
-            'periode_mulai' => $request->periode_mulai,
-            'periode_selesai' => $request->periode_selesai,
-            'status' => $request->status,
+            'company_id' => auth()->user()->companyProfile->id,
+            ...$validated
         ]);
 
-        return redirect()->route('company.internships.index')->with('success', 'Lowongan berhasil dibuat.');
+        return redirect()
+            ->route('company.internships.index')
+            ->with('success', 'Internship posting created successfully');
     }
 
-    public function show(InternshipPosting $internship)
+    public function show(InternshipPosting $internship): View
     {
-        if ($internship->company_id !== Auth::user()->companyProfile->id) {
-            abort(403);
-        }
+        $this->abortIfNotOwned($internship);
         return view('company.internships.show', compact('internship'));
     }
 
-    public function edit(InternshipPosting $internship)
+    public function edit(InternshipPosting $internship): View
     {
-        if ($internship->company_id !== Auth::user()->companyProfile->id) {
-            abort(403);
-        }
+        $this->abortIfNotOwned($internship);
         return view('company.internships.edit', compact('internship'));
     }
 
-    public function update(Request $request, InternshipPosting $internship)
+    public function update(Request $request, InternshipPosting $internship): RedirectResponse
     {
-        if ($internship->company_id !== Auth::user()->companyProfile->id) {
-            abort(403);
-        }
+        $this->abortIfNotOwned($internship);
 
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'kuota' => 'required|integer|min:1',
-            'lokasi' => 'required|string|max:255',
-            'periode_mulai' => 'required|date',
-            'periode_selesai' => 'required|date|after_or_equal:periode_mulai',
-            'status' => 'required|in:aktif,nonaktif',
-        ]);
+        $validated = $request->validate($this->validationRules());
+        $internship->update($validated);
 
-        $internship->update($request->only([
-            'judul', 'deskripsi', 'kuota', 'lokasi', 'periode_mulai', 'periode_selesai', 'status'
-        ]));
-
-        return redirect()->route('company.internships.index')->with('success', 'Lowongan berhasil diperbarui.');
+        return redirect()
+            ->route('company.internships.index')
+            ->with('success', 'Internship posting updated successfully');
     }
 
-    public function destroy(InternshipPosting $internship)
+    public function destroy(InternshipPosting $internship): RedirectResponse
     {
-        if ($internship->company_id !== Auth::user()->companyProfile->id) {
-            abort(403);
-        }
-
+        $this->abortIfNotOwned($internship);
         $internship->delete();
-        return redirect()->route('company.internships.index')->with('success', 'Lowongan berhasil dihapus.');
+
+        return redirect()
+            ->route('company.internships.index')
+            ->with('success', 'Internship posting deleted successfully');
+    }
+
+    protected function validationRules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:5000',
+            'quota' => 'required|integer|min:1|max:100',
+            'location' => 'required|string|max:255',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'status' => 'required|in:active,inactive',
+        ];
+    }
+
+    protected function abortIfNotOwned(InternshipPosting $internship): void
+    {
+        $companyId = auth()->user()->companyProfile?->id;
+        if ($internship->company_id !== $companyId) {
+            abort(403, 'You are not authorized to access this internship posting.');
+        }
     }
 }
