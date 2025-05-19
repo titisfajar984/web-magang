@@ -4,34 +4,47 @@
 
 @section('content')
 <div class="container mx-auto max-w-3xl">
-  <div class="flex justify-between items-center mb-6">
+  <!-- Header Section -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
     <div>
-      <h3 class="text-xl font-semibold text-gray-800">Tambah Lowongan Baru</h3>
-      <p class="text-gray-500">Isi formulir berikut untuk menambahkan lowongan magang</p>
+      <h1 class="text-2xl font-bold text-gray-900">Tambah Lowongan Baru</h1>
+      <p class="text-gray-500 mt-1">Isi formulir berikut untuk menambahkan lowongan magang</p>
     </div>
     <a href="{{ route('company.internships.index') }}"
-       class="text-gray-500 hover:text-gray-700 inline-flex items-center">
-      <i data-feather="arrow-left" class="w-5 h-5 mr-1"></i> Kembali
+       class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+      <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+      Kembali
     </a>
   </div>
 
-  <div class="bg-white rounded-lg shadow p-6">
+  <!-- Form Section -->
+  <div class="bg-white shadow rounded-lg p-6">
     <form action="{{ route('company.internships.store') }}" method="POST" class="space-y-6">
       @csrf
 
       @if($errors->any())
-        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
-          <ul class="list-disc pl-5">
-            @foreach($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
+        <div class="rounded-md bg-red-50 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i data-feather="alert-circle" class="h-5 w-5 text-red-400"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">Terjadi kesalahan saat mengisi formulir</h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc pl-5 space-y-1">
+                  @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       @endif
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
+          <label for="title" class="block text-sm font-medium text-gray-700">Judul *</label>
           <input type="text" name="title" id="title" required
                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                  value="{{ old('title') }}">
@@ -77,19 +90,20 @@
 
         <div class="md:col-span-2">
           <label for="description" class="block text-sm font-medium text-gray-700">Deskripsi *</label>
-          <textarea name="description" id="description" rows="4" required
+          <textarea name="description" id="description" rows="5" required
                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ old('description') }}</textarea>
         </div>
       </div>
 
-      <div class="flex justify-end space-x-3">
+      <div class="flex justify-end space-x-3 pt-6">
         <a href="{{ route('company.internships.index') }}"
            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Batal
         </a>
         <button type="submit"
                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          <i data-feather="save" class="w-4 h-4 mr-2"></i> Simpan Lowongan
+          <i data-feather="save" class="w-4 h-4 mr-2"></i>
+          Simpan Lowongan
         </button>
       </div>
     </form>

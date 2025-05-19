@@ -3,7 +3,7 @@
 @section('title', 'Profil Peserta')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto max-w-3xl">
     <div class="bg-white rounded-lg shadow-md p-6">
         @if(session('success'))
             <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">

@@ -31,7 +31,7 @@
     <div class="min-h-full flex items-center justify-center auth-container">
         <div class="bg-white/90 backdrop-blur-lg rounded-xl shadow-2xl p-8 w-full max-w-md animate-in">
             <div class="text-center mb-8">
-                <img src="{{ asset('logo.png') }}" alt="Logo" class="h-16 mx-auto mb-4">
+                <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo" class="h-16 mx-auto mb-4">
                 <h1 class="text-3xl font-bold text-gray-800">Get Started</h1>
                 <p class="text-gray-600 mt-2">Create your account in 30 seconds</p>
             </div>
@@ -102,9 +102,9 @@
 
                 <button type="submit"
                         class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg
-                              font-medium text-white bg-blue-600 hover:bg-green-700 shadow-sm hover:shadow-md
+                              font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md
                               transform transition-all duration-200 hover:-translate-y-0.5">
-                    Create Account
+                    Register
                 </button>
 
                 <p class="mt-6 text-center text-sm text-gray-600">

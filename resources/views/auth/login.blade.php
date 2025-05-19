@@ -31,7 +31,7 @@
     <div class="min-h-full flex items-center justify-center auth-container">
         <div class="bg-white/90 backdrop-blur-lg rounded-xl shadow-2xl p-8 w-full max-w-md animate-in">
             <div class="text-center mb-8">
-                <img src="{{ asset('logo.png') }}" alt="Logo" class="h-16 mx-auto mb-4">
+                <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo" class="h-16 mx-auto mb-4">
                 <h1 class="text-3xl font-bold text-gray-800">Welcome Back</h1>
                 <p class="text-gray-600 mt-2">Sign in to continue your journey</p>
             </div>

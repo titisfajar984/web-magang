@@ -16,27 +16,30 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-lg">
       <div class="p-6 flex items-center space-x-3">
-        <div class="bg-blue-600 text-white p-2 rounded-lg">
-          <i data-feather="activity"></i>
-        </div>
-        <h1 class="text-xl font-semibold text-gray-800">Sistem Magang Berdampak</h1>
+        <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo" class="h-12 w-12">
+        <h1 class="text-xl font-semibold text-gray-800">Magang Berdampak</h1>
       </div>
+
       <ul class="space-y-2 px-4">
-        <li>
-          <a href="{{ route('company.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-            <i data-feather="home" class="w-5 h-5 mr-3"></i> Dashboard
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('company.internships.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.internships.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-            <i data-feather="briefcase" class="w-5 h-5 mr-3"></i> Lowongan
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('company.profile.index') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs('company.profile.index') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-            <i data-feather="user" class="w-5 h-5 mr-3"></i> Profil
-          </a>
-        </li>
+        @php
+          $menus = [
+            ['route' => 'company.index',              'icon' => 'home',      'label' => 'Dashboard'],
+            ['route' => 'company.internships.index',  'icon' => 'briefcase', 'label' => 'Lowongan'],
+            ['route' => 'company.apply.index',        'icon' => 'file-text', 'label' => 'Lamaran'],
+            ['route' => 'company.profile.index',      'icon' => 'user',      'label' => 'Profil'],
+          ];
+        @endphp
+
+        @foreach($menus as $item)
+          <li>
+            <a href="{{ route($item['route']) }}"
+               class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs($item['route']) ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+              <i data-feather="{{ $item['icon'] }}" class="w-5 h-5 mr-3"></i>
+              {{ $item['label'] }}
+            </a>
+          </li>
+        @endforeach
+
         <li class="pt-4 border-t border-gray-200 mt-4">
           <form action="{{ route('logout') }}" method="POST">
             @csrf
@@ -58,14 +61,14 @@
             <i data-feather="bell" class="w-6 h-6 text-gray-600"></i>
             <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-          @php
-            $company = \App\Models\CompanyProfile::where('user_id', auth()->id())->first();
-          @endphp
           <div class="flex items-center space-x-2">
+            @php
+              $company = \App\Models\CompanyProfile::where('user_id', auth()->id())->first();
+            @endphp
             @if ($company && $company->logo)
               <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo Perusahaan" class="w-8 h-8 rounded-full object-cover">
             @else
-              <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center uppercase">
+              <div class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center uppercase text-sm">
                 {{ substr(auth()->user()->name, 0, 1) }}
               </div>
             @endif
@@ -75,6 +78,18 @@
 
       <!-- Page Content -->
       <main class="flex-1 overflow-auto p-6">
+        @if(session('success'))
+          <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+            {{ session('success') }}
+          </div>
+        @endif
+
+        @if(session('error'))
+          <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            {{ session('error') }}
+          </div>
+        @endif
+
         @yield('content')
       </main>
     </div>

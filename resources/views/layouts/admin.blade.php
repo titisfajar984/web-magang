@@ -21,9 +21,7 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-lg">
       <div class="p-6 flex items-center space-x-3">
-        <div class="bg-blue-600 text-white p-2 rounded-lg">
-          <i data-feather="briefcase" class="w-6 h-6"></i>
-        </div>
+        <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo" class="h-12 w-12">
         <h1 class="text-xl font-semibold text-gray-800">Magang Berdampak</h1>
       </div>
 

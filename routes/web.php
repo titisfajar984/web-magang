@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Company\InternshipPostingsController;
+use App\Http\Controllers\Company\InternshipsController;
 use App\Http\Controllers\Company\ProfileController;
 use App\Http\Controllers\Participant\ParticipantIntershipsController;
 use App\Http\Controllers\Participant\ParticipantProfileController;
@@ -57,6 +58,9 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::resource('internships', InternshipPostingsController::class);
+    Route::get('applications', [InternshipsController::class, 'applications'])->name('apply.index');
+    Route::get('applications/{application}', [InternshipsController::class, 'showApplication'])->name('apply.show');
+    Route::put('applications/{application}', [InternshipsController::class, 'updateApplication'])->name('apply.update');
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
