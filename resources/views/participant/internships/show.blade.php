@@ -77,14 +77,10 @@
                                 Sudah terdaftar
                             </button>
                         @else
-                            <form action="{{ route('participant.internships.apply', $intern->id) }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <!-- Jika ingin ada input file dan cover_letter, tampilkan disini -->
-                                <button type="submit"
-                                        class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all">
-                                    Daftar Sekarang
-                                </button>
-                            </form>
+                            <a href="{{ route('participant.internships.confirmation', $intern->id) }}"
+                            class="block w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-center transition-all">
+                                Daftar Sekarang
+                            </a>
                         @endif
                     @else
                         <a href="{{ route('participant.profile.edit') }}"
@@ -97,4 +93,12 @@
         </div>
     </div>
 </div>
+
+<script>
+function confirmRegistration() {
+    return confirm(
+        "Dengan mendaftar pada program magang ini, saya menyatakan bahwa seluruh data yang saya isi adalah benar, dan saya bersedia untuk mengikuti seluruh proses seleksi serta peraturan yang berlaku di perusahaan terkait.\n\nSaya juga memahami bahwa pendaftaran ini bersifat final dan tidak dapat dibatalkan tanpa alasan yang jelas.\n\nApakah Anda yakin ingin melanjutkan pendaftaran?"
+    );
+}
+</script>
 @endsection

@@ -75,7 +75,14 @@
           </div>
         </div>
       </nav>
-
+        <!-- Breadcrumb Header -->
+        <div class="bg-gray-50 border-b border-gray-200 px-6 py-3">
+        @hasSection('breadcrumb')
+            <div class="text-sm text-gray-600">
+            @yield('breadcrumb')
+            </div>
+        @endif
+        </div>
       <!-- Page Content -->
       <main class="flex-1 overflow-auto p-6">
         @yield('content')

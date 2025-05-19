@@ -83,6 +83,29 @@ class ParticipantIntershipsController extends Controller
             ->with('success', 'Lamaran berhasil dikirim.');
     }
 
+    public function confirmPage($id)
+    {
+        $intern = InternshipPosting::with('company')->findOrFail($id);
+        $participantProfile = Auth::user()->participantProfile;
+
+        if (!$participantProfile) {
+            return redirect()->route('participant.profile.create')
+                ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
+        }
+
+        $alreadyApplied = InternshipApplication::where([
+            'participant_id' => $participantProfile->id,
+            'internship_posting_id' => $id
+        ])->exists();
+
+        if ($alreadyApplied) {
+            return redirect()->route('participant.internships.show', $id)
+                ->with('error', 'Anda sudah mendaftar pada magang ini.');
+        }
+
+        return view('participant.internships.confirmation', compact('intern'));
+    }
+
 
     public function myApplications()
     {
@@ -100,4 +123,39 @@ class ParticipantIntershipsController extends Controller
 
         return view('participant.apply.index', compact('applications'));
     }
+
+    public function receiveResult($id)
+    {
+        $participant = Auth::user()->participantProfile;
+        $app = InternshipApplication::where([
+                    'id'             => $id,
+                    'participant_id' => $participant->id,
+                ])->firstOrFail();
+
+        if ($app->status !== 'Accepted') {
+            return back()->with('error', 'Hanya lamaran yang Diterima yang bisa dikonfirmasi.');
+        }
+
+        $app->update(['result_received' => true]);
+
+        return back()->with('success', 'Konfirmasi penerimaan hasil berhasil.');
+    }
+
+    public function confirmReceive($id)
+    {
+        $participant = Auth::user()->participantProfile;
+
+        $application = InternshipApplication::with('internship.company')
+            ->where('id', $id)
+            ->where('participant_id', $participant->id)
+            ->firstOrFail();
+
+        if ($application->result_received) {
+            return redirect()->route('participant.apply.index')->with('success', 'Anda sudah mengkonfirmasi penerimaan hasil.');
+        }
+
+        return view('participant.apply.confirm_receive', compact('application'));
+    }
+
+
 }

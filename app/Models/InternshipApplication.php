@@ -20,7 +20,12 @@ class InternshipApplication extends Model
         'internship_posting_id',
         'participant_id',
         'status',
+        'result_received',
         'tanggal',
+    ];
+
+    protected $casts = [
+        'result_received' => 'boolean',
     ];
 
     public function internship(): BelongsTo
