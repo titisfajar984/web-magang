@@ -16,11 +16,10 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-lg">
       <div class="p-6 flex items-center space-x-3">
-        <div class="bg-blue-600 text-white p-2 rounded-lg">
-          <i data-feather="activity"></i>
-        </div>
-        <h1 class="text-xl font-semibold text-gray-800">Sistem Magang Berdampak</h1>
+        <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo" class="h-12 w-12">
+        <h1 class="text-xl font-semibold text-gray-800">Magang Berdampak</h1>
       </div>
+
       <ul class="space-y-2 px-4">
         @php
           $menus = [
@@ -75,14 +74,7 @@
           </div>
         </div>
       </nav>
-        <!-- Breadcrumb Header -->
-        <div class="bg-gray-50 border-b border-gray-200 px-6 py-3">
-        @hasSection('breadcrumb')
-            <div class="text-sm text-gray-600">
-            @yield('breadcrumb')
-            </div>
-        @endif
-        </div>
+
       <!-- Page Content -->
       <main class="flex-1 overflow-auto p-6">
         @yield('content')

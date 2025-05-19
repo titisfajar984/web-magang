@@ -1,6 +1,6 @@
 @extends('layouts.participant')
 
-@section('title', 'Profil Peserta')
+@section('title', 'Profil')
 
 @section('content')
 <div class="container mx-auto max-w-3xl">
@@ -11,7 +11,7 @@
             </div>
         @endif
 
-        <h1 class="text-2xl font-bold mb-6">Profil Peserta</h1>
+        <h1 class="text-2xl font-bold mb-6">Profil</h1>
 
         <form method="POST" action="{{ route('participant.profile.update') }}" enctype="multipart/form-data">
             @csrf

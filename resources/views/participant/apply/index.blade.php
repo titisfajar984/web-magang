@@ -1,13 +1,13 @@
 @extends('layouts.participant')
 
-@section('title', 'Lamaran Saya')
+@section('title', 'Lamaran')
 
 @section('content')
 <div class="container mx-auto max-w-3xl">
   <!-- Header -->
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900">Riwayat Lamaran Saya</h1>
+      <h1 class="text-2xl font-bold text-gray-900">Riwayat Lamaran</h1>
       <p class="text-gray-500 mt-1">Lihat riwayat lamaran magang Anda</p>
     </div>
   </div>

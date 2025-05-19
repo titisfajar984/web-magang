@@ -1,6 +1,6 @@
 @extends('layouts.participant')
 
-@section('title', 'Daftar Lowongan Magang')
+@section('title', 'Lowongan')
 
 @section('content')
 <div class="container mx-auto max-w-3xl">
