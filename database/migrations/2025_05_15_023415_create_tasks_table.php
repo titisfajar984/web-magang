@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->date('deadline');
+            $table->string('file_path')->nullable();
             $table->enum('status', ['To Do', 'In Progress', 'Done']);
             $table->timestamps();
             $table->softDeletes();

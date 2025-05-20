@@ -20,33 +20,72 @@
         <h1 class="text-xl font-semibold text-gray-800">Magang Berdampak</h1>
       </div>
 
-      <ul class="space-y-2 px-4">
-        @php
-          $menus = [
-            ['route' => 'participant.index', 'icon' => 'home', 'label' => 'Dashboard'],
-            ['route' => 'participant.internships.index', 'icon' => 'briefcase', 'label' => 'Lowongan'],
-            ['route' => 'participant.apply.index', 'icon' => 'file-text', 'label' => 'Riwayat'],
-            ['route' => 'participant.profile.index', 'icon' => 'user', 'label' => 'Profil'],
-          ];
-        @endphp
-        @foreach($menus as $item)
-          <li>
-            <a href="{{ route($item['route']) }}" class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs($item['route']) ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-              <i data-feather="{{ $item['icon'] }}" class="w-5 h-5 mr-3"></i>
-              {{ $item['label'] }}
-            </a>
-          </li>
-        @endforeach
+    <ul class="space-y-2 px-4">
+    @php
+        $menus = [
+        ['route' => 'participant.index', 'icon' => 'home', 'label' => 'Dashboard'],
+        ['route' => 'participant.internships.index', 'icon' => 'briefcase', 'label' => 'Lowongan'],
+        ['route' => 'participant.apply.index', 'icon' => 'file-text', 'label' => 'Riwayat'],
+        ['route' => 'participant.profile.index', 'icon' => 'user', 'label' => 'Profil'],
+        ];
+    @endphp
 
-        <li class="pt-4 border-t border-gray-200 mt-4">
-          <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="w-full flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-600 hover:text-red-600 transition">
-              <i data-feather="log-out" class="w-5 h-5 mr-3"></i> Logout
-            </button>
-          </form>
+    @foreach($menus as $item)
+        <li>
+        <a href="{{ route($item['route']) }}"
+            class="flex items-center p-3 rounded-lg hover:bg-blue-50 {{ request()->routeIs($item['route']) ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+            <i data-feather="{{ $item['icon'] }}" class="w-5 h-5 mr-3"></i>
+            {{ $item['label'] }}
+        </a>
         </li>
-      </ul>
+    @endforeach
+
+    <!-- Menu Kegiatan -->
+    <li x-data="{ open: false }" class="relative">
+        <button type="button"
+        @click="open = !open"
+        class="w-full flex items-center justify-between p-3 rounded-lg text-gray-600 hover:bg-blue-50 transition">
+        <span class="flex items-center">
+            <i data-feather="activity" class="w-5 h-5 mr-3"></i> Kegiatan
+        </span>
+        <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transform transition-transform" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+        </button>
+        <ul x-show="open" x-transition class="ml-8 mt-1 space-y-1">
+        <li>
+            <a href="#"
+            class="block p-2 rounded-lg text-sm hover:bg-blue-50 text-gray-600">
+            Tugas
+            </a>
+        </li>
+        <li>
+            <a href="#"
+            class="block p-2 rounded-lg text-sm hover:bg-blue-50 text-gray-600">
+            Logbook
+            </a>
+        </li>
+        <li>
+            <a href="#"
+            class="block p-2 rounded-lg text-sm hover:bg-blue-50 text-gray-600">
+            Laporan Akhir
+            </a>
+        </li>
+        </ul>
+    </li>
+
+    <li class="pt-4 border-t border-gray-200 mt-4">
+        <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit"
+            class="w-full flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-600 hover:text-red-600 transition">
+            <i data-feather="log-out" class="w-5 h-5 mr-3"></i> Logout
+        </button>
+        </form>
+    </li>
+    </ul>
+
     </aside>
 
     <!-- Main Content -->
@@ -85,6 +124,7 @@
   <!-- JS -->
   <script src="https://unpkg.com/flowbite@1.7.0/dist/flowbite.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
+  <script src="//unpkg.com/alpinejs" defer></script>
   <script>feather.replace()</script>
 </body>
 </html>

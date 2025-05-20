@@ -44,10 +44,14 @@ class ParticipantIntershipsController extends Controller
     {
         $intern = InternshipPosting::with('company')->findOrFail($id);
         $participantProfile = Auth::user()->participantProfile;
+
+        if (!$participantProfile) {
+            return redirect()->route('participant.profile.index')->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
+        }
+
         $alreadyApplied = InternshipApplication::where('internship_posting_id', $intern->id)
             ->where('participant_id', $participantProfile->id)
             ->exists();
-
                 return view('participant.internships.show', compact('intern', 'alreadyApplied'));
             }
 
@@ -57,7 +61,7 @@ class ParticipantIntershipsController extends Controller
         $participantProfile = Auth::user()->participantProfile;
 
         if (!$participantProfile) {
-            return redirect()->route('participant.profile.create')
+            return redirect()->route('participant.profile.index')
                 ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
 
@@ -89,7 +93,7 @@ class ParticipantIntershipsController extends Controller
         $participantProfile = Auth::user()->participantProfile;
 
         if (!$participantProfile) {
-            return redirect()->route('participant.profile.create')
+            return redirect()->route('participant.profile.index')
                 ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
 
@@ -112,7 +116,7 @@ class ParticipantIntershipsController extends Controller
         $participantProfile = Auth::user()->participantProfile;
 
         if (!$participantProfile) {
-            return redirect()->route('participant.profile.create')
+            return redirect()->route('participant.profile.index')
                 ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
 

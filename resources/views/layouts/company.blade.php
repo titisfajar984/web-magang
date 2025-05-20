@@ -26,6 +26,7 @@
             ['route' => 'company.index',              'icon' => 'home',      'label' => 'Dashboard'],
             ['route' => 'company.internships.index',  'icon' => 'briefcase', 'label' => 'Lowongan'],
             ['route' => 'company.apply.index',        'icon' => 'file-text', 'label' => 'Lamaran'],
+            ['route' => 'company.participants.index',      'icon' => 'users',      'label' => 'Peserta'],
             ['route' => 'company.profile.index',      'icon' => 'user',      'label' => 'Profil'],
           ];
         @endphp

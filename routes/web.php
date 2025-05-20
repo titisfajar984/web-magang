@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Company\InternshipPostingsController;
 use App\Http\Controllers\Company\InternshipsController;
 use App\Http\Controllers\Company\ProfileController;
+use App\Http\Controllers\Company\TaskController;
 use App\Http\Controllers\Participant\ParticipantIntershipsController;
 use App\Http\Controllers\Participant\ParticipantProfileController;
 use Illuminate\Support\Facades\Mail;
@@ -61,6 +62,14 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::get('applications', [InternshipsController::class, 'applications'])->name('apply.index');
     Route::get('applications/{application}', [InternshipsController::class, 'showApplication'])->name('apply.show');
     Route::put('applications/{application}', [InternshipsController::class, 'updateApplication'])->name('apply.update');
+    Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::get('tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::get('tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::get('participants', [TaskController::class, 'participantIndex'])->name('participants.index');
+    Route::get('participants/{participant}/tasks', [TaskController::class, 'tasksByParticipant'])->name('participants.tasks');
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
