@@ -43,4 +43,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(ParticipantProfile::class, 'user_id');
     }
+
+    public function submissions()
+    {
+        return $this->hasOne(TaskSubmission::class);
+    }
+
 }

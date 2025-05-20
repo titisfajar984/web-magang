@@ -38,4 +38,9 @@ class Task extends Model
         return $this->belongsTo(ParticipantProfile::class, 'participant_id');
     }
 
+    public function submissions()
+    {
+        return $this->hasMany(TaskSubmission::class);
+    }
+
 }

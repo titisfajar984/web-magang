@@ -1,0 +1,140 @@
+@extends('layouts.participant')
+
+@section('title', 'Detail Tugas')
+
+@section('content')
+<div class="container mx-auto max-w-full px-4">
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">{{ $task->name }}</h1>
+            <p class="text-gray-500 mt-1">Detail tugas dari program magang {{ $task->internship->title }}</p>
+        </div>
+        <a href="{{ route('participant.tasks.index') }}"
+           class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+            Kembali
+        </a>
+    </div>
+
+    <!-- Task Details -->
+    <div class="bg-white shadow rounded-lg p-6 mb-6 w-full">
+        <div class="mb-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-2">Deskripsi Tugas</h2>
+            <div class="prose max-w-none text-gray-600">
+                {!! $task->description !!}
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Deadline</h3>
+                <p class="mt-1 text-sm text-gray-900">
+                    {{ \Carbon\Carbon::parse($task->deadline)->format('d M Y H:i') }}
+                <span class="ml-2 {{ now()->gt($task->deadline) ? 'text-red-600' : 'text-gray-500' }}">
+                    ({{ \Carbon\Carbon::parse($task->deadline)->diffForHumans() }})
+                </span>
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">File Tugas</h3>
+                @if($task->file_path)
+                <div class="mt-1">
+                    <a href="{{ Storage::url('tasks/'.$task->file_path) }}" target="_blank"
+                       class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                        <i data-feather="file" class="w-4 h-4 mr-2"></i>
+                        Download File Tugas
+                    </a>
+                </div>
+                @else
+                <p class="mt-1 text-sm text-gray-500">Tidak ada file terlampir</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Section -->
+    <div class="bg-white shadow rounded-lg p-6 w-full">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Pengumpulan Tugas</h2>
+
+        @if($submission)
+            <!-- Show existing submission -->
+            <div class="mb-6 p-4 border border-green-100 rounded-lg bg-green-50">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i data-feather="check-circle" class="h-5 w-5 text-green-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-green-800">
+                            Anda telah mengumpulkan tugas ini pada {{ Carbon\Carbon::parse($submission->submission_date)->format('d M Y H:i') }}
+                        </h3>
+                        <div class="mt-2 text-sm text-green-700">
+                            <p>Status:
+                                <span class="font-semibold {{ $submission->status == 'Late' ? 'text-yellow-600' : 'text-green-600' }}">
+                                    {{ $submission->status }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="text-sm font-medium text-gray-700 mb-2">Jawaban Anda</h3>
+                <div class="prose max-w-none bg-gray-50 p-4 rounded-lg">
+                    {!! nl2br(e($submission->submission_text)) !!}
+                </div>
+            </div>
+
+            @if($submission->attachment_file)
+            <div class="mb-4">
+                <h3 class="text-sm font-medium text-gray-700 mb-2">File Lampiran</h3>
+                <a href="{{ Storage::url($submission->attachment_file) }}" target="_blank"
+                   class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                    <i data-feather="paperclip" class="w-4 h-4 mr-2"></i>
+                    Download Lampiran
+                </a>
+            </div>
+            @endif
+
+            <div class="flex justify-end">
+                <a href="{{ route('participant.tasks.edit', $task->id) }}"
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i data-feather="edit" class="w-4 h-4 mr-2"></i>
+                    Edit Jawaban
+                </a>
+            </div>
+        @else
+            <!-- Submission Form -->
+            <form method="POST" action="{{ route('participant.tasks.submit', $task->id) }}" enctype="multipart/form-data">
+                @csrf
+
+                <div class="mb-4">
+                    <label for="submission_text" class="block text-sm font-medium text-gray-700 mb-2">Jawaban *</label>
+                    <textarea id="submission_text" name="submission_text" rows="6" required
+                              class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"></textarea>
+                    <p class="mt-1 text-sm text-gray-500">Tulis jawaban atau penjelasan untuk tugas ini</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lampiran File (Opsional)</label>
+                    <div class="mt-1 flex items-center">
+                        <input type="file" name="attachment_file" id="attachment_file"
+                               class="p-2 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none">
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">Format file: PDF, DOC, DOCX, JPG, PNG (Maks. 5MB)</p>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i data-feather="upload" class="w-4 h-4 mr-2"></i>
+                        Kumpulkan Tugas
+                    </button>
+                </div>
+            </form>
+        @endif
+    </div>
+</div>
+@endsection

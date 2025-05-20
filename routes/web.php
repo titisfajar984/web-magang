@@ -10,6 +10,7 @@ use App\Http\Controllers\Company\ProfileController;
 use App\Http\Controllers\Company\TaskController;
 use App\Http\Controllers\Participant\ParticipantIntershipsController;
 use App\Http\Controllers\Participant\ParticipantProfileController;
+use App\Http\Controllers\Participant\ParticipantTaskSubmissionController;
 use Illuminate\Support\Facades\Mail;
 
 /*
@@ -82,4 +83,9 @@ Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('pa
     Route::get('apply', [ParticipantIntershipsController::class, 'myApplications'])->name('apply.index');
     Route::post('applications/{id}/receive', [ParticipantIntershipsController::class, 'receiveResult'])->name('applications.receive');
     Route::get('applications/{id}/confirm-receive', [ParticipantIntershipsController::class, 'confirmReceive'])->name('applications.confirm-receive');
+    Route::get('/tasks', [ParticipantTaskSubmissionController::class, 'index'])->name('tasks.index');
+    Route::get('/tasks/{taskId}', [ParticipantTaskSubmissionController::class, 'show'])->name('tasks.show');
+    Route::post('/tasks/{taskId}/submit', [ParticipantTaskSubmissionController::class, 'store'])->name('tasks.submit');
+    Route::get('/tasks/{taskId}/edit', [ParticipantTaskSubmissionController::class, 'edit'])->name('tasks.edit');
+    Route::put('/tasks/{taskId}/update', [ParticipantTaskSubmissionController::class, 'update'])->name('tasks.update');
 });
