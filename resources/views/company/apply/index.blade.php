@@ -40,7 +40,7 @@
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
-            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
               Aksi
             </th>
           </tr>
@@ -79,24 +79,28 @@
                 </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <div class="flex items-center justify-end space-x-4">
+            <div class="flex items-center justify-end space-x-3">
+                {{-- Tombol Detail --}}
                 <a href="{{ route('company.apply.show', $application->id) }}"
-                   class="text-blue-600 hover:text-blue-800 transition-colors"
-                   title="Detail">
-                  <i data-feather="eye" class="w-5 h-5"></i>
+                class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition h-[36px]">
+                <i data-feather="eye" class="w-4 h-4 mr-1.5"></i>
+                Detail
                 </a>
+
+                {{-- Dropdown Status --}}
                 <form action="{{ route('company.apply.update', $application->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <select name="status" onchange="this.form.submit()"
-                            class="text-xs border rounded-md px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-                        <option value="pending" {{ $application->status === 'Pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="accepted" {{ $application->status === 'Accepted' ? 'selected' : '' }}>Diterima</option>
-                        <option value="rejected" {{ $application->status === 'Rejected' ? 'selected' : '' }}>Ditolak</option>
-                    </select>
+                @csrf
+                @method('PUT')
+                <select name="status" onchange="this.form.submit()"
+                        class="text-sm h-[36px] border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                    <option value="pending" {{ $application->status === 'Pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="accepted" {{ $application->status === 'Accepted' ? 'selected' : '' }}>Diterima</option>
+                    <option value="rejected" {{ $application->status === 'Rejected' ? 'selected' : '' }}>Ditolak</option>
+                </select>
                 </form>
-              </div>
+            </div>
             </td>
+
           </tr>
           @empty
           <tr>

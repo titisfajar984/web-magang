@@ -75,20 +75,25 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">File Tugas</label>
-          @if($task->file)
-            <p class="mb-2 text-sm text-gray-600">File saat ini:
-              <a href="{{ asset('storage/tasks/' . $task->file) }}" target="_blank" class="text-blue-600 underline">
-                {{ $task->file }}
-              </a>
-            </p>
-          @endif
-          <input type="file" name="file" class="form-input @error('file') border-red-500 @enderror">
-          @error('file')
-            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-          @enderror
-          <p class="text-gray-500 text-sm mt-1">Biarkan kosong jika tidak ingin mengganti file.</p>
+            <label class="block text-sm font-medium text-gray-700 mb-2">File Tugas</label>
+
+            @if($task->file_path)
+                <div class="flex items-center space-x-3 mb-2">
+                <i data-feather="file-text" class="w-5 h-5 text-gray-600"></i>
+                <a href="{{ Storage::url($task->file_path) }}" target="_blank"
+                    class="text-blue-600 hover:underline text-sm truncate max-w-xs">
+                    {{ basename($task->file_path) }}
+                </a>
+                </div>
+            @endif
+
+            <input type="file" name="file" class="form-input @error('file') border-red-500 @enderror">
+            @error('file')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+            <p class="text-gray-500 text-sm mt-1">Biarkan kosong jika tidak ingin mengganti file.</p>
         </div>
+
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Status *</label>

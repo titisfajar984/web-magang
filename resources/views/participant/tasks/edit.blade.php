@@ -31,18 +31,19 @@
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Lampiran File</label>
-
                 @if($submission->attachment_file)
-                <div class="mb-2">
-                    <p class="text-sm text-gray-600">File saat ini:</p>
-                    <a href="{{ Storage::url($submission->attachment_file) }}" target="_blank"
-                       class="inline-flex items-center text-blue-600 hover:text-blue-800">
-                        <i data-feather="paperclip" class="w-4 h-4 mr-2"></i>
-                        {{ basename($submission->attachment_file) }}
-                    </a>
-                </div>
+                    <div class="mb-2">
+                        <p class="text-sm text-gray-600">File saat ini:</p>
+                        <div class="flex items-center space-x-2 mt-1">
+                        <i data-feather="file-text" class="w-5 h-5 text-gray-500"></i>
+                        <a href="{{ Storage::url($submission->attachment_file) }}"
+                            target="_blank"
+                            class="text-sm text-blue-600 hover:underline truncate max-w-xs">
+                            {{ basename($submission->attachment_file) }}
+                        </a>
+                        </div>
+                    </div>
                 @endif
-
                 <div class="mt-1 flex items-center">
                     <input type="file" name="attachment_file" id="attachment_file"
                            class="p-2 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none">

@@ -35,7 +35,7 @@
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Kuota
             </th>
-            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
               Aksi
             </th>
           </tr>
@@ -68,27 +68,38 @@
               {{ $posting->quota }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <div class="flex items-center justify-end space-x-4">
-                <a href="{{ route('company.internships.show', $posting->id) }}"
-                   class="text-blue-600 hover:text-blue-800 transition-colors"
-                   title="Detail">
-                  <i data-feather="eye" class="w-5 h-5"></i>
-                </a>
-                <a href="{{ route('company.internships.edit', $posting->id) }}"
-                   class="text-yellow-600 hover:text-yellow-800 transition-colors"
-                   title="Edit">
-                  <i data-feather="edit" class="w-5 h-5"></i>
-                </a>
-                <form action="{{ route('company.internships.destroy', $posting->id) }}" method="POST"
-                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus lowongan ini?')">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
-                    <i data-feather="trash-2" class="w-5 h-5"></i>
-                  </button>
-                </form>
-              </div>
+                <div class="flex items-center justify-end space-x-3">
+                    {{-- Tombol Detail --}}
+                    <a href="{{ route('company.internships.show', $posting->id) }}"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition h-[36px]"
+                    title="Detail">
+                    <i data-feather="eye" class="w-4 h-4 mr-1.5"></i>
+                    Detail
+                    </a>
+
+                    {{-- Tombol Edit --}}
+                    <a href="{{ route('company.internships.edit', $posting->id) }}"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-md transition h-[36px]"
+                    title="Edit">
+                    <i data-feather="edit" class="w-4 h-4 mr-1.5"></i>
+                    Edit
+                    </a>
+
+                    {{-- Tombol Hapus --}}
+                    <form action="{{ route('company.internships.destroy', $posting->id) }}" method="POST"
+                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus lowongan ini?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition h-[36px]"
+                            title="Hapus">
+                        <i data-feather="trash-2" class="w-4 h-4 mr-1.5"></i>
+                        Hapus
+                    </button>
+                    </form>
+                </div>
             </td>
+
           </tr>
           @empty
           <tr>

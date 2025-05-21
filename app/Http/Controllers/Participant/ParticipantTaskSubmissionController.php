@@ -9,7 +9,6 @@ use App\Models\InternshipApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class ParticipantTaskSubmissionController extends Controller
@@ -17,8 +16,8 @@ class ParticipantTaskSubmissionController extends Controller
     public function index()
     {
         $user = Auth::user();
-        // Pastikan participantProfile relasi sudah ada dan tidak null
         $participantId = optional($user->participantProfile)->id;
+
         if (!$participantId) {
             abort(403, 'Profile peserta tidak ditemukan.');
         }
@@ -53,14 +52,17 @@ class ParticipantTaskSubmissionController extends Controller
         $task = Task::findOrFail($taskId);
         $user = Auth::user();
 
-        $isLate = Carbon::now()->gt(Carbon::parse($task->deadline));
+        $deadline = Carbon::parse($task->deadline)->setTimezone(config('app.timezone'));
+        $now = Carbon::now();
+
+        $isLate = $now->gt($deadline);
         $status = $isLate ? 'Late' : 'Submitted';
 
         $data = [
             'task_id' => $task->id,
             'user_id' => $user->id,
             'submission_text' => $request->submission_text,
-            'submission_date' => now()->toDateTimeString(),
+            'submission_date' => $now->toDateTimeString(),
             'status' => $status,
         ];
 
@@ -96,10 +98,13 @@ class ParticipantTaskSubmissionController extends Controller
             'attachment_file' => 'nullable|file|max:5120|mimes:pdf,doc,docx,jpg,png',
         ]);
 
+        $deadline = Carbon::parse($submission->task->deadline)->setTimezone(config('app.timezone'));
+        $now = Carbon::now();
+
         $data = [
             'submission_text' => $request->submission_text,
-            'submission_date' => now()->toDateTimeString(),
-            'status' => Carbon::now()->gt(Carbon::parse($submission->task->deadline)) ? 'Late' : 'Submitted',
+            'submission_date' => $now->toDateTimeString(),
+            'status' => $now->gt($deadline) ? 'Late' : 'Submitted',
         ];
 
         if ($request->hasFile('attachment_file')) {

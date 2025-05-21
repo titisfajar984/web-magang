@@ -29,7 +29,7 @@
             <table class="min-w-full divide-y divide-gray-200 table-auto">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Tugas</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tugas</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program Magang</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deadline</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -63,8 +63,12 @@
                                 {{ $status }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ route('participant.tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-900">Detail</a>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="{{ route('participant.tasks.show', $task->id) }}"
+                            class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition">
+                                <i data-feather="eye" class="w-4 h-4 mr-1.5"></i>
+                                Detail
+                            </a>
                         </td>
                     </tr>
                     @endforeach

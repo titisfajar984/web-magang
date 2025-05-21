@@ -30,10 +30,10 @@
             <div>
                 <h3 class="text-sm font-medium text-gray-500">Deadline</h3>
                 <p class="mt-1 text-sm text-gray-900">
-                    {{ \Carbon\Carbon::parse($task->deadline)->format('d M Y H:i') }}
-                <span class="ml-2 {{ now()->gt($task->deadline) ? 'text-red-600' : 'text-gray-500' }}">
-                    ({{ \Carbon\Carbon::parse($task->deadline)->diffForHumans() }})
-                </span>
+                    {{ \Carbon\Carbon::parse($task->deadline)->timezone('Asia/Jakarta')->format('d M Y H:i') }}
+                    <span class="ml-2 {{ now()->timezone('Asia/Jakarta')->gt(\Carbon\Carbon::parse($task->deadline)->timezone('Asia/Jakarta')) ? 'text-red-600' : 'text-gray-500' }}">
+                        ({{ \Carbon\Carbon::parse($task->deadline)->timezone('Asia/Jakarta')->diffForHumans() }})
+                    </span>
                 </p>
             </div>
 
@@ -41,7 +41,7 @@
                 <h3 class="text-sm font-medium text-gray-500">File Tugas</h3>
                 @if($task->file_path)
                 <div class="mt-1">
-                    <a href="{{ Storage::url('tasks/'.$task->file_path) }}" target="_blank"
+                    <a href="{{ Storage::url($task->file_path) }}" target="_blank"
                        class="inline-flex items-center text-blue-600 hover:text-blue-800">
                         <i data-feather="file" class="w-4 h-4 mr-2"></i>
                         Download File Tugas
@@ -67,7 +67,7 @@
                     </div>
                     <div class="ml-3">
                         <h3 class="text-sm font-medium text-green-800">
-                            Anda telah mengumpulkan tugas ini pada {{ Carbon\Carbon::parse($submission->submission_date)->format('d M Y H:i') }}
+                            Anda telah mengumpulkan tugas ini pada {{ \Carbon\Carbon::parse($submission->updated_at)->timezone('Asia/Jakarta')->format('d M Y H:i') }}
                         </h3>
                         <div class="mt-2 text-sm text-green-700">
                             <p>Status:

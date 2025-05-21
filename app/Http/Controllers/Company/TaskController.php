@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use App\Models\TaskSubmission;
 use App\Models\InternshipPosting;
 use App\Models\ParticipantProfile;
 use App\Models\InternshipApplication;
@@ -27,37 +28,53 @@ class TaskController extends Controller
         return view('company.participants.index', compact('applications'));
     }
 
-    public function tasksByParticipant($participantId)
+    public function index(Request $request)
+    {
+        $company = Auth::user()->companyProfile;
+        $participantId = $request->query('participant_id');
+
+        $query = Task::with(['internship', 'application.participant.user'])
+            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id));
+
+        $participant = null;
+        if ($participantId) {
+            $participant = ParticipantProfile::with('user')->findOrFail($participantId);
+
+            $hasApplication = InternshipApplication::where('participant_id', $participantId)
+                ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
+                ->exists();
+
+            abort_unless($hasApplication, 403, 'Peserta tidak terdaftar di perusahaan Anda');
+
+            $query->whereHas('application', fn($q) => $q->where('participant_id', $participantId));
+        }
+
+        $tasks = $query->latest()->paginate(15);
+
+        return view('company.tasks.index', compact('tasks', 'participant'));
+    }
+
+    public function tasksByParticipant(ParticipantProfile $participant)
     {
         $company = Auth::user()->companyProfile;
 
-        $participant = ParticipantProfile::with('user')->findOrFail($participantId);
-
-        $hasApplication = InternshipApplication::where('participant_id', $participantId)
+        // Verify participant belongs to company
+        $hasApplication = InternshipApplication::where('participant_id', $participant->id)
             ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
             ->exists();
 
         abort_unless($hasApplication, 403, 'Peserta tidak terdaftar di perusahaan Anda');
 
-        $tasks = Task::with(['internship', 'application'])
-            ->whereHas('application', function ($q) use ($participantId, $company) {
-                $q->where('participant_id', $participantId)
-                  ->whereHas('internship', fn($q2) => $q2->where('company_id', $company->id));
-            })->latest()->paginate(10);
-
-        return view('company.participants.tasks', compact('participant', 'tasks'));
-    }
-
-    public function index()
-    {
-        $company = Auth::user()->companyProfile;
-
         $tasks = Task::with(['internship', 'application.participant.user'])
+            ->whereHas('application', fn($q) => $q->where('participant_id', $participant->id))
             ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
             ->latest()
             ->paginate(15);
 
-        return view('company.tasks.index', compact('tasks'));
+        return view('company.tasks.index', [
+            'tasks' => $tasks,
+            'participant' => $participant->load('user')
+        ]);
     }
 
     public function create()
@@ -183,5 +200,23 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->back()->with('success', 'Tugas berhasil dihapus');
+    }
+
+    public function viewSubmission(TaskSubmission $submission)
+    {
+        $company = Auth::user()->companyProfile;
+
+        // Verify submission belongs to company
+        abort_unless(
+            $submission->task->internship->company_id === $company->id,
+            403,
+            'Anda tidak memiliki akses ke jawaban ini'
+        );
+
+        return view('company.tasks.view-submission', [
+            'task' => $submission->task,
+            'submission' => $submission,
+            'participant' => $submission->user->participantProfile
+        ]);
     }
 }

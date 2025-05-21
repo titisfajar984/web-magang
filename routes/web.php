@@ -61,6 +61,8 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::get('participants', [TaskController::class, 'participantIndex'])->name('participants.index');
     Route::get('participants/{participant}/tasks', [TaskController::class, 'tasksByParticipant'])->name('participants.tasks');
+    Route::get('submissions/{submission}', [TaskController::class, 'viewSubmission'])
+        ->name('tasks.view-submission');
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
