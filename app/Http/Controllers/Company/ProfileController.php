@@ -23,7 +23,11 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:2000',
             'address' => 'required|string|max:500',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg|mimetypes:image/jpeg,image/png|max:2048'
+        ], [
+            'name.required' => 'Data Nama Perusahaan harus diisi.',
+            'description.required' => 'Data Deskripsi harus diisi.',
+            'address.required' => 'Data Alamat harus diisi.',
         ]);
 
         $company = CompanyProfile::where('user_id', auth()->id())->firstOrFail();

@@ -11,7 +11,6 @@ use App\Http\Controllers\Company\TaskController;
 use App\Http\Controllers\Participant\ParticipantIntershipsController;
 use App\Http\Controllers\Participant\ParticipantProfileController;
 use App\Http\Controllers\Participant\ParticipantTaskSubmissionController;
-use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,31 +22,22 @@ use Illuminate\Support\Facades\Mail;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/test-email', function () {
-    Mail::raw('Tes kirim email berhasil!', function ($message) {
-        $message->to('your@email.com') // Ganti dengan email aktif kamu (atau dummy jika hanya ingin cek Mailtrap)
-                ->subject('Tes Email dari Laravel');
-    });
-
-    return 'Email berhasil dikirim!';
-});
-
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('register', [AuthController::class, 'register']);
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:3,1');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+});
 
-Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('register', [AuthController::class, 'register']);
-
-Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
-
-Route::get('/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+Route::middleware('auth')->post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::view('/index', 'admin.index')->name('index');

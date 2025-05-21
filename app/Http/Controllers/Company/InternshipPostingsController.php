@@ -12,11 +12,10 @@ class InternshipPostingsController extends Controller
 {
     public function index(): View
     {
-        $companyProfile = auth()->user()->companyProfile;
-        abort_unless($companyProfile, 403, 'Please complete your company profile first');
+        $company = auth()->user()->companyProfile;
+        abort_unless($company, 403, 'Harap lengkapi profil perusahaan Anda terlebih dahulu.');
 
-        $postings = InternshipPosting::query()
-            ->where('company_id', $companyProfile->id)
+        $postings = InternshipPosting::where('company_id', $company->id)
             ->latest()
             ->get();
 
@@ -30,16 +29,15 @@ class InternshipPostingsController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate($this->validationRules());
+        $validated = $request->validate($this->validationRules(), $this->validationMessages());
 
-        InternshipPosting::create([
+        InternshipPosting::create(array_merge($validated, [
             'company_id' => auth()->user()->companyProfile->id,
-            ...$validated
-        ]);
+        ]));
 
         return redirect()
             ->route('company.internships.index')
-            ->with('success', 'Internship posting created successfully');
+            ->with('success', 'Lowongan magang berhasil dibuat.');
     }
 
     public function show(InternshipPosting $internship): View
@@ -58,12 +56,12 @@ class InternshipPostingsController extends Controller
     {
         $this->abortIfNotOwned($internship);
 
-        $validated = $request->validate($this->validationRules());
+        $validated = $request->validate($this->validationRules(), $this->validationMessages());
         $internship->update($validated);
 
         return redirect()
             ->route('company.internships.index')
-            ->with('success', 'Internship posting updated successfully');
+            ->with('success', 'Lowongan magang berhasil diperbarui.');
     }
 
     public function destroy(InternshipPosting $internship): RedirectResponse
@@ -73,7 +71,7 @@ class InternshipPostingsController extends Controller
 
         return redirect()
             ->route('company.internships.index')
-            ->with('success', 'Internship posting deleted successfully');
+            ->with('success', 'Lowongan magang berhasil dihapus.');
     }
 
     protected function validationRules(): array
@@ -89,11 +87,29 @@ class InternshipPostingsController extends Controller
         ];
     }
 
+    protected function validationMessages(): array
+    {
+        return [
+            'title.required' => 'Judul lowongan harus diisi.',
+            'description.required' => 'Deskripsi lowongan harus diisi.',
+            'quota.required' => 'Jumlah kuota harus diisi.',
+            'location.required' => 'Lokasi harus diisi.',
+            'start_date.required' => 'Tanggal mulai harus diisi.',
+            'end_date.required' => 'Tanggal selesai harus diisi.',
+            'status.required' => 'Status harus dipilih.',
+            'start_date.after_or_equal' => 'Tanggal mulai harus hari ini atau setelahnya.',
+            'end_date.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
+        ];
+    }
+
     protected function abortIfNotOwned(InternshipPosting $internship): void
     {
         $companyId = auth()->user()->companyProfile?->id;
-        if ($internship->company_id !== $companyId) {
-            abort(403, 'You are not authorized to access this internship posting.');
-        }
+
+        abort_if(
+            !$companyId || $internship->company_id !== $companyId,
+            403,
+            'Anda tidak memiliki akses ke lowongan magang ini.'
+        );
     }
 }

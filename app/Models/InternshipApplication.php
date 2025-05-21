@@ -16,7 +16,6 @@ class InternshipApplication extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id',
         'internship_posting_id',
         'participant_id',
         'status',

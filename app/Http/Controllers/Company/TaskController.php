@@ -88,10 +88,15 @@ class TaskController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'deadline' => 'required|date',
+            'deadline' => 'required|date|after_or_equal:today',
             'status' => 'required|in:To Do,In Progress, Done',
             'internship_id' => 'required|exists:internship_postings,id',
             'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
+        ], [
+            'internship_id.required' => 'Pilih lowongan yang sesuai',
+            'file.required' => 'File tugas harus diunggah',
+            'file.mimes' => 'File harus berupa dokumen atau gambar',
+            'file.max' => 'Ukuran file maksimal 5MB',
         ]);
 
         // Pastikan lowongan benar milik perusahaan
@@ -140,6 +145,11 @@ class TaskController extends Controller
             'status' => 'required|in:To Do,In Progress,Done',
             'internship_id' => 'required|exists:internship_postings,id',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
+        ], [
+            'internship_id.required' => 'Pilih lowongan yang sesuai',
+            'file.required' => 'File tugas harus diunggah',
+            'file.mimes' => 'File harus berupa dokumen atau gambar',
+            'file.max' => 'Ukuran file maksimal 5MB',
         ]);
 
         // Validasi kepemilikan lowongan

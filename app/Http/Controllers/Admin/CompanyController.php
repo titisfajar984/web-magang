@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+    }
+
     public function index()
     {
         $companies = CompanyProfile::with('user')->latest()->paginate(10);
@@ -30,6 +36,12 @@ class CompanyController extends Controller
             'description' => 'required|string',
             'address' => 'required|string|max:500',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'user_id.required' => 'Data Pemilik akun harus diisi.',
+            'user_id.exists' => 'Pemilik akun tidak valid.',
+            'name.required' => 'Data Nama Perusahaan harus diisi.',
+            'description.required' => 'Data Deskripsi harus diisi.',
+            'address.required' => 'Data Alamat harus diisi.',
         ]);
 
         $logoPath = null;
@@ -46,7 +58,7 @@ class CompanyController extends Controller
         ]);
 
         return redirect()->route('admin.company.index')
-                        ->with('success', 'Company profile created successfully.');
+            ->with('success', 'Profil perusahaan berhasil dibuat.');
     }
 
     public function show(CompanyProfile $company)
@@ -68,11 +80,17 @@ class CompanyController extends Controller
             'description' => 'required|string',
             'address' => 'required|string|max:500',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'user_id.required' => 'Data Pemilik akun harus diisi.',
+            'user_id.exists' => 'Pemilik akun tidak valid.',
+            'name.required' => 'Data Nama Perusahaan harus diisi.',
+            'description.required' => 'Data Deskripsi harus diisi.',
+            'address.required' => 'Data Alamat harus diisi.',
         ]);
 
         $logoPath = $company->logo;
+
         if ($request->hasFile('logo')) {
-            // Delete old logo if exists
             if ($company->logo) {
                 Storage::disk('public')->delete($company->logo);
             }
@@ -88,7 +106,7 @@ class CompanyController extends Controller
         ]);
 
         return redirect()->route('admin.company.index')
-                        ->with('success', 'Company profile updated successfully.');
+            ->with('success', 'Profil perusahaan berhasil diperbarui.');
     }
 
     public function destroy(CompanyProfile $company)
@@ -96,10 +114,9 @@ class CompanyController extends Controller
         if ($company->logo) {
             Storage::disk('public')->delete($company->logo);
         }
-
         $company->delete();
 
         return redirect()->route('admin.company.index')
-                        ->with('success', 'Company profile deleted successfully.');
+            ->with('success', 'Profil perusahaan berhasil dihapus.');
     }
 }

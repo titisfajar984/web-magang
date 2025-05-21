@@ -29,8 +29,8 @@
         @php
           $menus = [
             ['route' => 'admin.index',   'icon' => 'home',      'label' => 'Dashboard'],
-            ['route' => 'admin.users.index',   'icon' => 'users',     'label' => 'User'],
-            ['route' => 'admin.company.index','icon' => 'briefcase','label' => 'Company'],
+            ['route' => 'admin.users.index',   'icon' => 'users',     'label' => 'Pengguna'],
+            ['route' => 'admin.company.index','icon' => 'briefcase','label' => 'Perusahaan'],
           ];
         @endphp
 
@@ -98,7 +98,9 @@
   <script src="https://unpkg.com/flowbite@1.7.0/dist/flowbite.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
     feather.replace();
+      });
   </script>
 </body>
 </html>

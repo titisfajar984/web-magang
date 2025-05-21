@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InternshipApplication;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class InternshipsController extends Controller
 {
-    public function applications()
+    public function applications(): View
     {
         $company = auth()->user()->companyProfile;
+        abort_unless($company, 403, 'Harap lengkapi profil perusahaan Anda terlebih dahulu.');
+
         $applications = InternshipApplication::with(['internship', 'participant.user'])
-            ->whereHas('internship', function($query) use ($company) {
+            ->whereHas('internship', function ($query) use ($company) {
                 $query->where('company_id', $company->id);
             })
             ->orderBy('created_at', 'desc')
@@ -21,25 +25,43 @@ class InternshipsController extends Controller
         return view('company.apply.index', compact('applications'));
     }
 
-    public function showApplication($id)
+    protected function abortIfNotOwned(InternshipApplication $application): void
     {
-        $application = InternshipApplication::with(['internship', 'participant.user'])
-            ->findOrFail($id);
+        $companyId = auth()->user()->companyProfile?->id;
+
+        abort_if(
+            !$companyId || $application->internship?->company_id !== $companyId,
+            403,
+            'Anda tidak berwenang mengakses lamaran ini.'
+        );
+    }
+
+    public function showApplication(int $id): View
+    {
+        $application = InternshipApplication::with(['internship', 'participant.user'])->findOrFail($id);
+
+        $this->abortIfNotOwned($application);
 
         return view('company.apply.show', compact('application'));
     }
 
-    public function updateApplication(Request $request, $id)
+    public function updateApplication(Request $request, int $id): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'status' => 'required|in:pending,accepted,rejected',
+        ], [
+            'status.required' => 'Status lamaran harus dipilih.',
+            'status.in' => 'Status lamaran tidak valid.',
         ]);
 
         $application = InternshipApplication::findOrFail($id);
+
+        $this->abortIfNotOwned($application);
+
         $application->update([
-            'status' => $request->status,
+            'status' => $validated['status'],
         ]);
 
-        return back()->with('success', 'Status lamaran berhasil diperbarui');
+        return back()->with('success', 'Status lamaran berhasil diperbarui.');
     }
 }

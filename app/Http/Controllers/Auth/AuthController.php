@@ -21,18 +21,34 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             $role = Auth::user()->role;
 
-            return redirect()->route($role . '.index');
+            $routes = [
+                'admin' => 'admin.index',
+                'company' => 'company.index',
+                'participant' => 'participant.index',
+            ];
+
+            if (!array_key_exists($role, $routes)) {
+                Auth::logout();
+                abort(403, 'Role tidak valid.');
+            }
+
+            return redirect()->route($routes[$role]);
         }
 
-        return redirect()->back()->withErrors([
+        return back()->withErrors([
             'email' => 'Email atau password salah.',
-        ]);
+        ])->withInput();
     }
 
     public function logout(Request $request)
@@ -60,7 +76,7 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => 'participant', // default role
+            'role'     => 'participant',
         ]);
 
         Auth::login($user);
