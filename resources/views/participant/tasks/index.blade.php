@@ -51,24 +51,41 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php
-                                $submission = $task->submissions->where('user_id', Auth::id())->first();
-                                $status = $submission ? $submission->status : 'Belum Dikerjakan';
                                 $statusColors = [
-                                    'Submitted' => 'bg-green-100 text-green-800',
-                                    'Late' => 'bg-yellow-100 text-yellow-800',
-                                    'Belum Dikerjakan' => 'bg-gray-100 text-gray-800'
+                                    'Done' => 'bg-green-100 text-green-800',
+                                    'In Progress' => 'bg-yellow-100 text-yellow-800',
+                                    'To Do' => 'bg-blue-100 text-blue-800',
                                 ];
+                                $statusText = [
+                                    'Done' => 'Selesai',
+                                    'In Progress' => 'Sedang Dikerjakan',
+                                    'To Do' => 'Ditugaskan',
+                                ];
+                                $statusClass = $statusColors[$task->status] ?? 'bg-gray-100 text-gray-800';
+                                $statusLabel = $statusText[$task->status] ?? $task->status;
                             @endphp
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $statusColors[$status] ?? 'bg-gray-100 text-gray-800' }}">
-                                {{ $status }}
+                            <span class="px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
+                                {{ $statusLabel }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="{{ route('participant.tasks.show', $task->id) }}"
-                            class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition">
+                                class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition mr-2">
                                 <i data-feather="eye" class="w-4 h-4 mr-1.5"></i>
                                 Detail
                             </a>
+
+                            @if($task->status === 'To Do')
+                            <form action="{{ route('participant.tasks.start', $task->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit"
+                                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-md transition">
+                                    <i data-feather="play" class="w-4 h-4 mr-1.5"></i>
+                                    Kerjakan
+                                </button>
+                            </form>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

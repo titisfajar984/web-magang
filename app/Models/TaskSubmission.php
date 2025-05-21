@@ -19,6 +19,9 @@ class TaskSubmission extends Model
         'attachment_file',
         'submission_date',
         'status',
+        'review_status',
+        'review_notes',
+        'review_date'
     ];
 
     protected static function boot()

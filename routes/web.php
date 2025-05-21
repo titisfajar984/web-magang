@@ -54,6 +54,7 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::get('applications/{application}', [InternshipsController::class, 'showApplication'])->name('apply.show');
     Route::put('applications/{application}', [InternshipsController::class, 'updateApplication'])->name('apply.update');
     Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
     Route::get('tasks/create', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::get('tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::get('participants/{participant}/tasks', [TaskController::class, 'tasksByParticipant'])->name('participants.tasks');
     Route::get('submissions/{submission}', [TaskController::class, 'viewSubmission'])
         ->name('tasks.view-submission');
+    Route::put('submissions/{submission}/review', [TaskController::class, 'reviewSubmission'])->name('tasks.review-submission');
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
@@ -76,6 +78,8 @@ Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('pa
     Route::post('applications/{id}/receive', [ParticipantIntershipsController::class, 'receiveResult'])->name('applications.receive');
     Route::get('applications/{id}/confirm-receive', [ParticipantIntershipsController::class, 'confirmReceive'])->name('applications.confirm-receive');
     Route::get('/tasks', [ParticipantTaskSubmissionController::class, 'index'])->name('tasks.index');
+    Route::patch('tasks/{task}/start', [ParticipantTaskSubmissionController::class, 'startTask'])
+    ->name('tasks.start');
     Route::get('/tasks/{taskId}', [ParticipantTaskSubmissionController::class, 'show'])->name('tasks.show');
     Route::post('/tasks/{taskId}/submit', [ParticipantTaskSubmissionController::class, 'store'])->name('tasks.submit');
     Route::get('/tasks/{taskId}/edit', [ParticipantTaskSubmissionController::class, 'edit'])->name('tasks.edit');

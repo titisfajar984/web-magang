@@ -32,6 +32,29 @@ class ParticipantTaskSubmissionController extends Controller
         return view('participant.tasks.index', compact('tasks'));
     }
 
+    public function startTask($taskId)
+    {
+        $user = Auth::user();
+        $participantId = optional($user->participantProfile)->id;
+
+        if (!$participantId) {
+            abort(403, 'Profile peserta tidak ditemukan.');
+        }
+
+        $task = Task::findOrFail($taskId);
+
+        $internshipIds = InternshipApplication::where('participant_id', $participantId)->pluck('internship_posting_id');
+        if (!$internshipIds->contains($task->internship_id)) {
+            abort(403, 'Anda tidak memiliki akses ke tugas ini.');
+        }
+
+        if ($task->status === 'To Do') {
+            $task->update(['status' => 'In Progress']);
+        }
+
+        return redirect()->back()->with('success', 'Status tugas diperbarui menjadi "Sedang Dikerjakan".');
+    }
+
     public function show($taskId)
     {
         $task = Task::with('internship')->findOrFail($taskId);

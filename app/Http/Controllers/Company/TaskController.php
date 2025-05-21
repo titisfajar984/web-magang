@@ -11,6 +11,7 @@ use App\Models\InternshipApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Carbon;
 
 class TaskController extends Controller
 {
@@ -58,12 +59,13 @@ class TaskController extends Controller
     {
         $company = Auth::user()->companyProfile;
 
-        // Verify participant belongs to company
-        $hasApplication = InternshipApplication::where('participant_id', $participant->id)
-            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
-            ->exists();
-
-        abort_unless($hasApplication, 403, 'Peserta tidak terdaftar di perusahaan Anda');
+        abort_unless(
+            InternshipApplication::where('participant_id', $participant->id)
+                ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
+                ->exists(),
+            403,
+            'Peserta tidak terdaftar di perusahaan Anda'
+        );
 
         $tasks = Task::with(['internship', 'application.participant.user'])
             ->whereHas('application', fn($q) => $q->where('participant_id', $participant->id))
@@ -77,6 +79,23 @@ class TaskController extends Controller
         ]);
     }
 
+    public function updateStatus(Request $request, Task $task)
+    {
+        $company = Auth::user()->companyProfile;
+
+        abort_unless($task->internship->company_id === $company->id, 403);
+
+        $validated = $request->validate([
+            'status' => 'required|in:To Do,In Progress,Done',
+        ]);
+
+        $task->status = $validated['status'];
+        $task->save();
+
+        return back()->with('success', 'Status tugas berhasil diperbarui.');
+    }
+
+
     public function create()
     {
         $company = Auth::user()->companyProfile;
@@ -86,7 +105,8 @@ class TaskController extends Controller
             ->get();
 
         if ($postings->isEmpty()) {
-            return redirect()->route('company.tasks.index')->with('error', 'Anda harus memiliki lowongan aktif sebelum membuat tugas');
+            return redirect()->route('company.tasks.index')
+                ->with('error', 'Anda harus memiliki lowongan aktif sebelum membuat tugas');
         }
 
         $applications = InternshipApplication::with('participant.user')
@@ -106,7 +126,7 @@ class TaskController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'deadline' => 'required|date|after_or_equal:today',
-            'status' => 'required|in:To Do,In Progress, Done',
+            'status' => 'required|in:To Do,In Progress,Done',
             'internship_id' => 'required|exists:internship_postings,id',
             'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
         ], [
@@ -116,12 +136,10 @@ class TaskController extends Controller
             'file.max' => 'Ukuran file maksimal 5MB',
         ]);
 
-        // Pastikan lowongan benar milik perusahaan
         $internship = InternshipPosting::where('id', $validated['internship_id'])
             ->where('company_id', $company->id)
             ->firstOrFail();
 
-        // Proses upload file
         if ($request->hasFile('file')) {
             $validated['file_path'] = $request->file('file')->store('tasks', 'public');
         }
@@ -139,7 +157,6 @@ class TaskController extends Controller
 
         $postings = InternshipPosting::where('company_id', $company->id)->get();
 
-        // Tampilkan semua aplikasi peserta untuk lowongan yang sama dengan task
         $applications = InternshipApplication::with('participant.user')
             ->where('status', 'accepted')
             ->where('result_received', true)
@@ -158,23 +175,20 @@ class TaskController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'deadline' => 'required|date',
+            'deadline' => 'required|date|after_or_equal:today',
             'status' => 'required|in:To Do,In Progress,Done',
             'internship_id' => 'required|exists:internship_postings,id',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
         ], [
             'internship_id.required' => 'Pilih lowongan yang sesuai',
-            'file.required' => 'File tugas harus diunggah',
             'file.mimes' => 'File harus berupa dokumen atau gambar',
             'file.max' => 'Ukuran file maksimal 5MB',
         ]);
 
-        // Validasi kepemilikan lowongan
         $internship = InternshipPosting::where('id', $validated['internship_id'])
             ->where('company_id', $company->id)
             ->firstOrFail();
 
-        // Jika ada file baru, hapus file lama lalu simpan file baru
         if ($request->hasFile('file')) {
             if ($task->file_path) {
                 Storage::disk('public')->delete($task->file_path);
@@ -206,7 +220,6 @@ class TaskController extends Controller
     {
         $company = Auth::user()->companyProfile;
 
-        // Verify submission belongs to company
         abort_unless(
             $submission->task->internship->company_id === $company->id,
             403,
@@ -219,4 +232,28 @@ class TaskController extends Controller
             'participant' => $submission->user->participantProfile
         ]);
     }
+
+    public function reviewSubmission(Request $request, TaskSubmission $submission)
+    {
+        $company = Auth::user()->companyProfile;
+
+        abort_unless(
+            $submission->task->internship->company_id === $company->id,
+            403,
+            'Anda tidak memiliki akses ke jawaban ini'
+        );
+
+        $validated = $request->validate([
+            'review_status' => 'required|in:approved,rejected,revision,pending',
+            'review_notes' => 'nullable|string|max:1000',
+        ]);
+
+        $validated['review_date'] = Carbon::now();
+
+        $submission->update($validated);
+
+        return redirect()->route('company.tasks.view-submission', $submission)
+                        ->with('success', 'Ulasan berhasil disimpan.');
+    }
+
 }

@@ -84,9 +84,17 @@
                   ];
                   $status = $statusConfig[$task->status] ?? ['color' => 'bg-gray-100 text-gray-800', 'label' => 'Tidak Diketahui'];
                 @endphp
-                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $status['color'] }}">
-                  {{ $status['label'] }}
-                </span>
+                <form action="{{ route('company.tasks.update-status', $task->id) }}" method="POST" class="inline-block">
+                    @csrf
+                    @method('PATCH')
+                    <select name="status" onchange="this.form.submit()" class="text-xs py-1 px-2 rounded-full {{ $status['color'] }}">
+                        @foreach(['To Do', 'In Progress', 'Done'] as $value)
+                        <option value="{{ $value }}" {{ $task->status === $value ? 'selected' : '' }}>
+                            {{ $statusConfig[$value]['label'] ?? $value }}
+                        </option>
+                        @endforeach
+                    </select>
+                </form>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex items-center justify-end space-x-2">

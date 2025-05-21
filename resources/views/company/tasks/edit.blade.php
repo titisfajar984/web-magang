@@ -100,7 +100,7 @@
           <select name="status" required
                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             <option value="To Do" {{ old('status', $task->status) == 'To Do' ? 'selected' : '' }}>Ditugaskan</option>
-            <option value="In Progress" {{ old('status', $task->status) == 'In Progress' ? 'selected' : '' }}>Dalam Proses</option>
+            <option value="In Progress" {{ old('status', $task->status) == 'In Progress' ? 'selected' : '' }}>Sedang Dikerjakan</option>
             <option value="Done" {{ old('status', $task->status) == 'Done' ? 'selected' : '' }}>Selesai</option>
           </select>
         </div>

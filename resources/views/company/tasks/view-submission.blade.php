@@ -32,7 +32,6 @@
                     </span>
                 </p>
             </div>
-
             <div>
                 <h3 class="text-sm font-medium text-gray-500">Status Tugas</h3>
                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold
@@ -54,14 +53,14 @@
                     <div>
                         <p class="text-sm font-medium text-green-800">
                             Dikirim pada {{ \Carbon\Carbon::parse($submission->updated_at)->timezone('Asia/Jakarta')->format('d M Y H:i') }}
-                            @if($submission->updated_at > $task->deadline)
+                            @if(\Carbon\Carbon::parse($submission->updated_at)->gt(\Carbon\Carbon::parse($task->deadline)))
                                 <span class="ml-2 text-red-600">(Terlambat)</span>
                             @endif
                         </p>
                         <p class="text-sm text-green-700 mt-1">
                             Status:
                             <span class="font-semibold {{ $submission->status === 'Late' ? 'text-yellow-600' : 'text-green-600' }}">
-                                {{ $submission->status ?? 'Terkirim' }}
+                                {{ $submission->status === 'Late' ? 'Terlambat' : 'Terkirim' }}
                             </span>
                         </p>
                     </div>
@@ -87,9 +86,81 @@
                 </a>
             </div>
             @endif
+
+            <!-- Review Section -->
+            @if($submission->review_status || $submission->review_notes)
+            <div class="mt-6 border-t pt-6">
+                <h3 class="text-md font-semibold text-gray-800 mb-2">Review Perusahaan</h3>
+                <div class="mb-2">
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-medium
+                        {{ $submission->review_status === 'approved' ? 'bg-green-100 text-green-800' : ($submission->review_status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                        {{
+                            $submission->review_status === 'approved' ? 'Disetujui' :
+                            ($submission->review_status === 'rejected' ? 'Ditolak' :
+                            ($submission->review_status === 'revision' ? 'Revisi' :
+                            ($submission->review_status === 'pending' ? 'Menunggu' : 'Belum direview')))
+                        }}
+                    </span>
+                </div>
+                @if($submission->review_notes)
+                <div class="text-sm text-gray-700 bg-gray-50 p-4 rounded-lg whitespace-pre-line">
+                    {{ $submission->review_notes }}
+                </div>
+                @endif
+            </div>
+            @endif
+
+            <!-- Form Review -->
+            <div class="mt-8 border-t pt-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Beri Review Jawaban</h3>
+
+                <form action="{{ route('company.tasks.review-submission', $submission->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-4">
+                        <label for="review_status" class="block text-sm font-medium text-gray-700 mb-1">Status Review</label>
+                        <select id="review_status" name="review_status" required
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <option value="">Pilih Status</option>
+                            <option value="approved" {{ old('review_status', $submission->review_status) === 'approved' ? 'selected' : '' }}>Disetujui</option>
+                            <option value="rejected" {{ old('review_status', $submission->review_status) === 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                            <option value="revision" {{ old('review_status', $submission->review_status) === 'revision' ? 'selected' : '' }}>Revisi</option>
+                            <option value="pending" {{ old('review_status', $submission->review_status) === 'pending' ? 'selected' : '' }}>Menunggu</option>
+                        </select>
+                        @error('review_status')
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="review_notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Review (opsional)</label>
+                        <textarea id="review_notes" name="review_notes" rows="4"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        >{{ old('review_notes', $submission->review_notes) }}</textarea>
+                        @error('review_notes')
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Simpan Review
+                    </button>
+                </form>
+            </div>
+
         @else
-            <p class="text-gray-500">Peserta belum mengumpulkan jawaban untuk tugas ini.</p>
+            <p class="text-gray-500 italic">Belum ada jawaban yang dikirim oleh peserta.</p>
         @endif
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    // Feather icons init if you use feather icons
+    if(window.feather){
+        feather.replace();
+    }
+</script>
 @endsection
