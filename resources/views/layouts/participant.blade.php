@@ -62,10 +62,11 @@
               </a>
             </li>
             <li>
-              <a href="#"
-                class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50 text-gray-600">
+              <a href="{{ route('participant.logbooks.index') }}"
+                class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50
+                {{ request()->routeIs('participant.logbooks.*') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
                 <i data-feather="book-open" class="w-4 h-4 mr-2"></i> Logbook
-              </a>
+            </a>
             </li>
             <li>
               <a href="#"

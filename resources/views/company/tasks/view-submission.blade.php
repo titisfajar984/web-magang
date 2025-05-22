@@ -1,14 +1,14 @@
 @extends('layouts.company')
 
-@section('title', 'Lihat Jawaban Peserta')
+@section('title', 'Detail Jawaban Peserta')
 
 @section('content')
-<div class="container mx-auto max-w-5xl px-4 py-6">
-    <!-- Header -->
+<div class="container mx-auto max-w-full px-4">
+    <!-- Header Section -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">{{ $task->name }}</h1>
-            <p class="text-gray-500 mt-1">Jawaban dari peserta: {{ $participant->user->name ?? '-' }}</p>
+            <p class="text-gray-500 mt-1">Jawaban peserta: <span class="font-medium text-gray-800">{{ $participant->user->name ?? '-' }}</span></p>
         </div>
         <a href="{{ route('company.tasks.index') }}"
            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -17,8 +17,8 @@
         </a>
     </div>
 
-    <!-- Task Details -->
-    <div class="bg-white shadow rounded-lg p-6 mb-8">
+    <!-- Task Detail -->
+    <div class="bg-white shadow rounded-lg p-6 mb-6 w-full">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Detail Tugas</h2>
         <div class="prose max-w-none text-gray-600 mb-6">{!! nl2br(e($task->description)) !!}</div>
 
@@ -27,13 +27,13 @@
                 <h3 class="text-sm font-medium text-gray-500">Deadline</h3>
                 <p class="mt-1 text-sm text-gray-900">
                     {{ \Carbon\Carbon::parse($task->deadline)->timezone('Asia/Jakarta')->format('d M Y') }}
-                    <span class="ml-2 {{ now()->timezone('Asia/Jakarta')->gt(\Carbon\Carbon::parse($task->deadline)->timezone('Asia/Jakarta')) ? 'text-red-600' : 'text-gray-500' }}">
-                        ({{ \Carbon\Carbon::parse($task->deadline)->timezone('Asia/Jakarta')->diffForHumans() }})
+                    <span class="ml-2 {{ now()->gt($task->deadline) ? 'text-red-600' : 'text-gray-500' }}">
+                        ({{ $task->deadline->diffForHumans() }})
                     </span>
                 </p>
             </div>
             <div>
-                <h3 class="text-sm font-medium text-gray-500">Status Tugas</h3>
+                <h3 class="text-sm font-medium text-gray-500">Status</h3>
                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold
                     {{ $task->status === 'Done' ? 'bg-green-100 text-green-800' : ($task->status === 'In Progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800') }}">
                     {{ $task->status === 'Done' ? 'Selesai' : ($task->status === 'In Progress' ? 'Sedang Dikerjakan' : 'Ditugaskan') }}
@@ -42,8 +42,8 @@
         </div>
     </div>
 
-    <!-- Submission Section -->
-    <div class="bg-white shadow rounded-lg p-6">
+    <!-- Jawaban Peserta -->
+    <div class="bg-white shadow rounded-lg p-6 w-full">
         <h2 class="text-lg font-semibold text-gray-900 mb-6">Jawaban Peserta</h2>
 
         @if($submission)
@@ -52,8 +52,8 @@
                     <i data-feather="check-circle" class="h-6 w-6 text-green-400"></i>
                     <div>
                         <p class="text-sm font-medium text-green-800">
-                            Dikirim pada {{ \Carbon\Carbon::parse($submission->updated_at)->timezone('Asia/Jakarta')->format('d M Y H:i') }}
-                            @if(\Carbon\Carbon::parse($submission->updated_at)->gt(\Carbon\Carbon::parse($task->deadline)))
+                            Dikirim pada {{ $submission->updated_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}
+                            @if($submission->updated_at->gt($task->deadline))
                                 <span class="ml-2 text-red-600">(Terlambat)</span>
                             @endif
                         </p>
@@ -87,40 +87,39 @@
             </div>
             @endif
 
-            <!-- Review Section -->
+            {{-- Review dari Perusahaan --}}
             @if($submission->review_status || $submission->review_notes)
             <div class="mt-6 border-t pt-6">
                 <h3 class="text-md font-semibold text-gray-800 mb-2">Review Perusahaan</h3>
-                <div class="mb-2">
-                    <span class="inline-block px-3 py-1 rounded-full text-xs font-medium
-                        {{ $submission->review_status === 'approved' ? 'bg-green-100 text-green-800' : ($submission->review_status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                        {{
-                            $submission->review_status === 'approved' ? 'Disetujui' :
-                            ($submission->review_status === 'rejected' ? 'Ditolak' :
-                            ($submission->review_status === 'revision' ? 'Revisi' :
-                            ($submission->review_status === 'pending' ? 'Menunggu' : 'Belum direview')))
-                        }}
-                    </span>
-                </div>
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-medium
+                    {{ $submission->review_status === 'approved' ? 'bg-green-100 text-green-800' :
+                       ($submission->review_status === 'rejected' ? 'bg-red-100 text-red-800' :
+                       ($submission->review_status === 'revision' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700')) }}">
+                    {{
+                        $submission->review_status === 'approved' ? 'Disetujui' :
+                        ($submission->review_status === 'rejected' ? 'Ditolak' :
+                        ($submission->review_status === 'revision' ? 'Revisi' : 'Menunggu'))
+                    }}
+                </span>
                 @if($submission->review_notes)
-                <div class="text-sm text-gray-700 bg-gray-50 p-4 rounded-lg whitespace-pre-line">
+                <div class="text-sm text-gray-700 bg-gray-50 p-4 mt-2 rounded-lg whitespace-pre-line">
                     {{ $submission->review_notes }}
                 </div>
                 @endif
             </div>
             @endif
 
-            <!-- Form Review -->
+            {{-- Form Review --}}
             <div class="mt-8 border-t pt-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Beri Review Jawaban</h3>
-
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Beri Review</h3>
                 <form action="{{ route('company.tasks.review-submission', $submission->id) }}" method="POST">
                     @csrf
                     @method('PUT')
+
                     <div class="mb-4">
                         <label for="review_status" class="block text-sm font-medium text-gray-700 mb-1">Status Review</label>
                         <select id="review_status" name="review_status" required
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-blue-200">
                             <option value="">Pilih Status</option>
                             <option value="approved" {{ old('review_status', $submission->review_status) === 'approved' ? 'selected' : '' }}>Disetujui</option>
                             <option value="rejected" {{ old('review_status', $submission->review_status) === 'rejected' ? 'selected' : '' }}>Ditolak</option>
@@ -133,24 +132,23 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="review_notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Review (opsional)</label>
+                        <label for="review_notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan (opsional)</label>
                         <textarea id="review_notes" name="review_notes" rows="4"
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                        >{{ old('review_notes', $submission->review_notes) }}</textarea>
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-blue-200">{{ old('review_notes', $submission->review_notes) }}</textarea>
                         @error('review_notes')
                         <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <button type="submit"
-                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Simpan Review
                     </button>
                 </form>
             </div>
 
         @else
-            <p class="text-gray-500 italic">Belum ada jawaban yang dikirim oleh peserta.</p>
+            <p class="text-gray-500 italic">Peserta belum mengirimkan jawaban untuk tugas ini.</p>
         @endif
     </div>
 </div>
@@ -158,8 +156,7 @@
 
 @section('scripts')
 <script>
-    // Feather icons init if you use feather icons
-    if(window.feather){
+    if (window.feather) {
         feather.replace();
     }
 </script>

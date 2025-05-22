@@ -15,20 +15,6 @@ use Illuminate\Support\Carbon;
 
 class TaskController extends Controller
 {
-    public function participantIndex()
-    {
-        $company = Auth::user()->companyProfile;
-
-        $applications = InternshipApplication::with(['participant.user', 'internship'])
-            ->where('status', 'accepted')
-            ->where('result_received', true)
-            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
-            ->latest()
-            ->paginate(15);
-
-        return view('company.participants.index', compact('applications'));
-    }
-
     public function index(Request $request)
     {
         $company = Auth::user()->companyProfile;

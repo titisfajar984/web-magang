@@ -7,10 +7,13 @@ use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Company\InternshipPostingsController;
 use App\Http\Controllers\Company\InternshipsController;
 use App\Http\Controllers\Company\ProfileController;
+use App\Http\Controllers\Company\ParticipantController;
 use App\Http\Controllers\Company\TaskController;
+use App\Http\Controllers\Company\LogbookController;
 use App\Http\Controllers\Participant\ParticipantIntershipsController;
 use App\Http\Controllers\Participant\ParticipantProfileController;
 use App\Http\Controllers\Participant\ParticipantTaskSubmissionController;
+use App\Http\Controllers\Participant\ParticipantLogbookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +25,7 @@ use App\Http\Controllers\Participant\ParticipantTaskSubmissionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -53,6 +57,7 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::get('applications', [InternshipsController::class, 'applications'])->name('apply.index');
     Route::get('applications/{application}', [InternshipsController::class, 'showApplication'])->name('apply.show');
     Route::put('applications/{application}', [InternshipsController::class, 'updateApplication'])->name('apply.update');
+    Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
     Route::get('tasks/create', [TaskController::class, 'create'])->name('tasks.create');
@@ -60,11 +65,10 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::get('tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-    Route::get('participants', [TaskController::class, 'participantIndex'])->name('participants.index');
-    Route::get('participants/{participant}/tasks', [TaskController::class, 'tasksByParticipant'])->name('participants.tasks');
     Route::get('submissions/{submission}', [TaskController::class, 'viewSubmission'])
         ->name('tasks.view-submission');
     Route::put('submissions/{submission}/review', [TaskController::class, 'reviewSubmission'])->name('tasks.review-submission');
+    Route::resource('logbooks', LogbookController::class)->only(['index', 'show']);
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
@@ -84,4 +88,5 @@ Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('pa
     Route::post('/tasks/{taskId}/submit', [ParticipantTaskSubmissionController::class, 'store'])->name('tasks.submit');
     Route::get('/tasks/{taskId}/edit', [ParticipantTaskSubmissionController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/{taskId}/update', [ParticipantTaskSubmissionController::class, 'update'])->name('tasks.update');
+    Route::resource('logbooks', ParticipantLogbookController::class);
 });

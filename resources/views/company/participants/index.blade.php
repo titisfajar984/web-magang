@@ -34,16 +34,31 @@
               <div class="text-sm text-gray-900">{{ $app->internship->title ?? '-' }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-3 py-1 rounded-full text-xs font-medium
-                {{ $app->status === 'accepted' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                {{ ucfirst($app->status) }}
-              </span>
+                @php
+                    $key   = strtolower($app->status);
+                    $colors= ['pending'=>'bg-yellow-100 text-yellow-800','accepted'=>'bg-green-100 text-green-800','rejected'=>'bg-red-100 text-red-800'];
+                    $texts = ['pending'=>'Menunggu','accepted'=>'Diterima','rejected'=>'Ditolak'];
+                    $cls   = $colors[$key] ?? 'bg-gray-100 text-gray-800';
+                    $lbl   = $texts[$key]  ?? ucfirst($app->status);
+                    if($app->status === 'accepted' && $app->result_received){
+                        $cls = 'bg-green-200 text-green-900';
+                        $lbl = 'Diterima & Dikonfirmasi';
+                    }
+                @endphp
+                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $cls }}">
+                    {{ $lbl }}
+                </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <a href="{{ route('company.tasks.index', $app->participant_id) }}"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition h-[36px]">
                     <i data-feather="list" class="w-4 h-4 mr-1.5"></i>
                     Kelola Tugas
+                </a>
+                <a href="{{ route('company.logbooks.index', ['participant_id' => $app->participant_id]) }}"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-green-600 bg-green-50 hover:bg-green-100 rounded-md transition h-[36px]">
+                    <i data-feather="book-open" class="w-4 h-4 mr-1.5"></i>
+                    Kelola Logbooks
                 </a>
             </td>
 
