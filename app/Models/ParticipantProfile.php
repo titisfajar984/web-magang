@@ -40,4 +40,10 @@ class ParticipantProfile extends Model
     {
         return $this->hasMany(InternshipApplication::class, 'participant_id');
     }
+
+    public function isComplete(): bool
+    {
+        return $this->phone_number && $this->address && $this->birth_date && $this->gender &&
+            $this->university && $this->study_program && $this->cv && $this->photo;
+    }
 }

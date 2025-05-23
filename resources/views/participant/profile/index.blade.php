@@ -10,6 +10,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if(!$participant->isComplete())
+            <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+                Profil Anda belum lengkap. Silakan lengkapi untuk bisa melihat dan melamar lowongan magang.
+            </div>
+        @endif
 
         <h1 class="text-2xl font-bold mb-6">Profil</h1>
 

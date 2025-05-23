@@ -19,7 +19,7 @@
         <tr>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pemilik Akun</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+          <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -43,25 +43,33 @@
             <div class="text-sm text-gray-900">{{ $company->user->name }}</div>
             <div class="text-sm text-gray-500">{{ $company->user->email }}</div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-            <div class="flex space-x-2" role="group" aria-label="Company actions">
-              <a href="{{ route('admin.company.show', $company->id) }}"
-                 class="text-blue-600 hover:text-blue-900" aria-label="View {{ $company->name }}">
-                <i data-feather="eye" class="w-4 h-4"></i>
-              </a>
-              <a href="{{ route('admin.company.edit', $company->id) }}"
-                 class="text-yellow-600 hover:text-yellow-900" aria-label="Edit {{ $company->name }}">
-                <i data-feather="edit" class="w-4 h-4"></i>
-              </a>
-              <form action="{{ route('admin.company.destroy', $company->id) }}" method="POST"
-                    onsubmit="return confirm('Are you sure you want to delete this company?')"
-                    class="inline">
+          <td class="px-6 py-4 whitespace-nowrap text-center">
+            <div class="flex justify-center items-center space-x-3">
+                <a href="{{ route('admin.company.show', $company->id) }}"
+                class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition h-[36px]"
+                title="Lihat {{ $company->name }}">
+                <i data-feather="eye" class="w-4 h-4 mr-1.5"></i>
+                Lihat
+                </a>
+
+                <a href="{{ route('admin.company.edit', $company->id) }}"
+                class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-md transition h-[36px]"
+                title="Edit {{ $company->name }}">
+                <i data-feather="edit" class="w-4 h-4 mr-1.5"></i>
+                Edit
+                </a>
+
+                <form action="{{ route('admin.company.destroy', $company->id) }}" method="POST"
+                    onsubmit="return confirm('Yakin ingin menghapus perusahaan ini?')">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="text-red-600 hover:text-red-900" aria-label="Delete {{ $company->name }}">
-                  <i data-feather="trash-2" class="w-4 h-4"></i>
+                <button type="submit"
+                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition h-[36px]"
+                        title="Hapus {{ $company->name }}">
+                    <i data-feather="trash-2" class="w-4 h-4 mr-1.5"></i>
+                    Hapus
                 </button>
-              </form>
+                </form>
             </div>
           </td>
         </tr>

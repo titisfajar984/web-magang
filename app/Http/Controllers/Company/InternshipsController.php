@@ -36,7 +36,7 @@ class InternshipsController extends Controller
         );
     }
 
-    public function showApplication(int $id): View
+    public function showApplication(Request $request, $id): View
     {
         $application = InternshipApplication::with(['internship', 'participant.user'])->findOrFail($id);
 
@@ -45,7 +45,7 @@ class InternshipsController extends Controller
         return view('company.apply.show', compact('application'));
     }
 
-    public function updateApplication(Request $request, int $id): RedirectResponse
+    public function updateApplication(Request $request, $id): RedirectResponse
     {
         $validated = $request->validate([
             'status' => 'required|in:pending,accepted,rejected',

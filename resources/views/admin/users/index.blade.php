@@ -20,7 +20,7 @@
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -50,22 +50,26 @@
                 {{ $roleLabel }}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm">
-            <div class="flex space-x-2">
-              <a href="{{ route('admin.users.edit', $user->id) }}"
-                 class="text-yellow-500 hover:text-yellow-700"
-                 title="Edit"
-                 aria-label="Edit pengguna {{ $user->name }}">
-                <i data-feather="edit" class="w-4 h-4"></i>
-              </a>
+          <td class="px-6 py-4 whitespace-nowrap text-center">
+            <div class="flex justify-center items-center space-x-3">
+                <a href="{{ route('admin.users.edit', $user->id) }}"
+                class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-md transition h-[36px]"
+                title="Edit Pengguna {{ $user->name }}">
+                <i data-feather="edit" class="w-4 h-4 mr-1.5"></i>
+                Edit
+                </a>
 
-              <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Hapus pengguna {{ $user->name }}?');" style="display:inline">
+                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                    onsubmit="return confirm('Hapus pengguna {{ $user->name }}?');">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="text-red-500 hover:text-red-700" title="Hapus" aria-label="Hapus pengguna {{ $user->name }}">
-                  <i data-feather="trash-2" class="w-4 h-4"></i>
+                <button type="submit"
+                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition h-[36px]"
+                        title="Hapus Pengguna {{ $user->name }}">
+                    <i data-feather="trash-2" class="w-4 h-4 mr-1.5"></i>
+                    Hapus
                 </button>
-              </form>
+                </form>
             </div>
           </td>
         </tr>

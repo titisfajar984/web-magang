@@ -12,16 +12,6 @@
     </div>
   </div>
 
-  <!-- Flash Message -->
-  @if(session('success'))
-    <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded">
-      <div class="flex items-center">
-        <i data-feather="check-circle" class="w-5 h-5 mr-2"></i>
-        <p>{{ session('success') }}</p>
-      </div>
-    </div>
-  @endif
-
   <!-- Table Section -->
   <div class="bg-white shadow rounded-lg overflow-hidden">
     <div class="overflow-x-auto">

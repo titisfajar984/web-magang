@@ -15,22 +15,26 @@ class ParticipantIntershipsController extends Controller
 {
     public function index(Request $request)
     {
+        $participantProfile = Auth::user()->participantProfile;
+
+        if (!$participantProfile || !$participantProfile->isComplete()) {
+            return redirect()->route('participant.profile.index')
+                ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu sebelum melihat lowongan.');
+        }
+
         $companies = CompanyProfile::orderBy('name')->get();
 
         $query = InternshipPosting::with('company')
             ->where('status', 'active');
 
-        // Filter perusahaan
         if ($request->filled('company_id')) {
             $query->where('company_id', $request->company_id);
         }
 
-        // Filter lokasi (location)
         if ($request->filled('location')) {
             $query->where('location', 'like', '%' . $request->location . '%');
         }
 
-        // Filter kuota (quota), misal mencari kuota minimal tertentu
         if ($request->filled('quota')) {
             $query->where('quota', '>=', (int) $request->quota);
         }
@@ -40,12 +44,13 @@ class ParticipantIntershipsController extends Controller
         return view('participant.internships.index', compact('interns', 'companies'));
     }
 
+
     public function show($id)
     {
         $intern = InternshipPosting::with('company')->findOrFail($id);
         $participantProfile = Auth::user()->participantProfile;
 
-        if (!$participantProfile) {
+        if (!$participantProfile || !$participantProfile->isComplete()) {
             return redirect()->route('participant.profile.index')->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
 

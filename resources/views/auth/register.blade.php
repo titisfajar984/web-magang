@@ -98,6 +98,18 @@
                     </div>
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" name="password_confirmation" required
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 input-transition
+                            focus:border-blue-500 focus:ring-2 focus:ring-blue-200 placeholder-gray-400"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+
                 <button type="submit"
                         class="w-full py-3 px-4 border border-transparent rounded-lg
                                font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md
