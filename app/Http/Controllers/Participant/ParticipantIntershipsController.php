@@ -35,11 +35,11 @@ class ParticipantIntershipsController extends Controller
             $query->where('location', 'like', '%' . $request->location . '%');
         }
 
-        if ($request->filled('quota')) {
-            $query->where('quota', '>=', (int) $request->quota);
+        if ($request->filled('title')) {
+            $query->where('title', 'like', '%' . $request->title . '%');
         }
 
-        $interns = $query->orderBy('created_at', 'desc')->paginate(10)->appends($request->query());
+        $interns = $query->orderBy('created_at', 'desc')->paginate(9)->appends($request->query());
 
         return view('participant.internships.index', compact('interns', 'companies'));
     }
@@ -165,6 +165,4 @@ class ParticipantIntershipsController extends Controller
 
         return view('participant.apply.confirm_receive', compact('application'));
     }
-
-
 }

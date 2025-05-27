@@ -38,44 +38,46 @@
               {{ $item['label'] }}
             </a>
           </li>
-        @endforeach
 
-        <!-- Menu Kegiatan -->
-        <li x-data="{ open: false }" class="relative">
-          <button type="button"
-            @click="open = !open"
-            class="w-full flex items-center justify-between p-3 rounded-lg text-gray-600 hover:bg-blue-50 transition">
-            <span class="flex items-center">
-              <i data-feather="activity" class="w-5 h-5 mr-3"></i> Kegiatan
-            </span>
-            <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transform transition-transform" fill="none"
-              stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <ul x-show="open" x-transition class="ml-8 mt-1 space-y-1" style="display: none;">
-            <li>
-              <a href="{{ route('participant.tasks.index') }}"
-                class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50
-                {{ request()->routeIs('participant.tasks.*') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-                <i data-feather="check-square" class="w-4 h-4 mr-2"></i> Tugas
-              </a>
+          @if($item['label'] === 'Riwayat')
+            <!-- Menu Kegiatan langsung setelah Riwayat -->
+            <li x-data="{ open: false }" class="relative">
+              <button type="button"
+                @click="open = !open"
+                class="w-full flex items-center justify-between p-3 rounded-lg text-gray-600 hover:bg-blue-50 transition">
+                <span class="flex items-center">
+                  <i data-feather="activity" class="w-5 h-5 mr-3"></i> Kegiatan
+                </span>
+                <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transform transition-transform" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <ul x-show="open" x-transition class="ml-8 mt-1 space-y-1" style="display: none;">
+                <li>
+                  <a href="{{ route('participant.tasks.index') }}"
+                    class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50
+                    {{ request()->routeIs('participant.tasks.*') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+                    <i data-feather="check-square" class="w-4 h-4 mr-2"></i> Tugas
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ route('participant.logbooks.index') }}"
+                    class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50
+                    {{ request()->routeIs('participant.logbooks.*') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
+                    <i data-feather="book-open" class="w-4 h-4 mr-2"></i> Logbook
+                  </a>
+                </li>
+                <li>
+                  <a href="#"
+                    class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50 text-gray-600">
+                    <i data-feather="file-text" class="w-4 h-4 mr-2"></i> Laporan Akhir
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li>
-              <a href="{{ route('participant.logbooks.index') }}"
-                class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50
-                {{ request()->routeIs('participant.logbooks.*') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
-                <i data-feather="book-open" class="w-4 h-4 mr-2"></i> Logbook
-            </a>
-            </li>
-            <li>
-              <a href="#"
-                class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50 text-gray-600">
-                <i data-feather="file-text" class="w-4 h-4 mr-2"></i> Laporan Akhir
-              </a>
-            </li>
-          </ul>
-        </li>
+          @endif
+        @endforeach
 
         <li class="pt-4 border-t border-gray-200 mt-4">
           <form action="{{ route('logout') }}" method="POST">

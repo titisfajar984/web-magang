@@ -55,14 +55,24 @@
             <td class="px-6 py-4 whitespace-nowrap">
               @php
                 $statusColors = [
-                  'inactive' => 'bg-red-100 text-red-800',
-                  'active' => 'bg-blue-100 text-blue-800',
+                    'inactive' => 'bg-red-100 text-red-800',
+                    'active' => 'bg-blue-100 text-blue-800',
                 ];
-                $statusClass = $statusColors[strtolower($posting->status)] ?? 'bg-gray-100 text-gray-800';
+
+                // Mapping status ke bahasa Indonesia
+                $statusLabels = [
+                    'inactive' => 'Tidak Aktif',
+                    'active' => 'Aktif',
+                ];
+
+                $statusKey = strtolower($posting->status);
+                $statusClass = $statusColors[$statusKey] ?? 'bg-gray-100 text-gray-800';
+                $statusLabel = $statusLabels[$statusKey] ?? ucfirst($posting->status);
               @endphp
-              <span class="px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
-                {{ ucfirst($posting->status) }}
-              </span>
+
+                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
+                {{ $statusLabel }}
+                </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {{ $posting->quota }}

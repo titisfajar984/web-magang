@@ -46,10 +46,10 @@
             <tr class="hover:bg-gray-50 transition-colors">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">
-                  {{ \Carbon\Carbon::parse($logbook->tanggal)->format('d M Y') }}
+                  {{ \Carbon\Carbon::parse($logbook->tanggal)->translatedFormat('d M Y') }}
                 </div>
                 <div class="text-sm text-gray-500">
-                  {{ \Carbon\Carbon::parse($logbook->tanggal)->format('l') }}
+                  {{ \Carbon\Carbon::parse($logbook->tanggal)->translatedFormat('l') }}
                 </div>
               </td>
               <td class="px-6 py-4 text-right">

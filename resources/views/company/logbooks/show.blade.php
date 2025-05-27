@@ -15,7 +15,7 @@
         </p>
         <p class="text-sm text-gray-600 flex items-center">
           <i data-feather="calendar" class="w-4 h-4 mr-1.5"></i>
-          <span class="font-medium">{{ \Carbon\Carbon::parse($logbook->tanggal)->format('d M Y, l') }}</span>
+          <span class="font-medium">{{ \Carbon\Carbon::parse($logbook->tanggal)->translatedFormat('d M Y, l') }}</span>
         </p>
       </div>
     </div>

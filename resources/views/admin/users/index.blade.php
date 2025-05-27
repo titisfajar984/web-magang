@@ -77,5 +77,8 @@
       </tbody>
     </table>
   </div>
+  <div class="mt-8">
+        {{ $users->links('vendor.pagination.tailwind') }}
+    </div>
 </div>
 @endsection

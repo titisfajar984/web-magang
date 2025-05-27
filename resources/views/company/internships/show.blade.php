@@ -40,14 +40,24 @@
       <div>
         <h3 class="text-sm font-medium text-gray-500">Status</h3>
         @php
-          $statusColors = [
+        $statusColors = [
             'inactive' => 'bg-red-100 text-red-800',
             'active' => 'bg-blue-100 text-blue-800',
-          ];
-          $statusClass = $statusColors[strtolower($internship->status)] ?? 'bg-gray-100 text-gray-800';
+        ];
+
+        // Mapping status ke bahasa Indonesia
+        $statusLabels = [
+            'inactive' => 'Tidak Aktif',
+            'active' => 'Aktif',
+        ];
+
+        $statusKey = strtolower($internship->status);
+        $statusClass = $statusColors[$statusKey] ?? 'bg-gray-100 text-gray-800';
+        $statusLabel = $statusLabels[$statusKey] ?? ucfirst($internship->status);
         @endphp
-        <span class="mt-1 px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
-          {{ ucfirst($internship->status) }}
+
+        <span class="px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
+        {{ $statusLabel }}
         </span>
       </div>
 

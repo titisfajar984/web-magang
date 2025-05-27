@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CompanyController;
@@ -44,13 +45,13 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::view('/index', 'admin.index')->name('index');
+    Route::get('/index', [DashboardController::class, 'index'])->name('index');
     Route::resource('users', UserController::class);
     Route::resource('company', CompanyController::class);
 });
 
 Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')->group(function () {
-    Route::view('/index', 'company.index')->name('index');
+    Route::get('/index', [DashboardController::class, 'companyIndex'])->name('index');
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::resource('internships', InternshipPostingsController::class);
@@ -72,7 +73,7 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
-    Route::view('/index', 'participant.index')->name('index');
+    Route::get('/index', [DashboardController::class, 'participantIndex'])->name('index');
     Route::get('profile', [ParticipantProfileController::class, 'index'])->name('profile.index');
     Route::put('profile', [ParticipantProfileController::class, 'update'])->name('profile.update');
     Route::resource('internships', ParticipantIntershipsController::class);
