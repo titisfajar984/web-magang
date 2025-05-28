@@ -10,7 +10,6 @@ use App\Models\InternshipApplication;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
-
 class ParticipantIntershipsController extends Controller
 {
     public function index(Request $request)
@@ -115,7 +114,6 @@ class ParticipantIntershipsController extends Controller
         return view('participant.internships.confirmation', compact('intern'));
     }
 
-
     public function myApplications()
     {
         $participantProfile = Auth::user()->participantProfile;
@@ -124,6 +122,11 @@ class ParticipantIntershipsController extends Controller
             return redirect()->route('participant.profile.index')
                 ->with('error', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
+        InternshipApplication::where('participant_id', $participantProfile->id)
+        ->where('status', 'Accepted')
+        ->where('result_received', false)
+        ->whereDate('updated_at', '<=', now()->subDays(3))
+        ->update(['status' => 'Rejected']);
 
         $applications = InternshipApplication::with(['internship.company'])
             ->where('participant_id', $participantProfile->id)

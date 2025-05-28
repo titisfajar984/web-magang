@@ -60,6 +60,11 @@
                     <i data-feather="book-open" class="w-4 h-4 mr-1.5"></i>
                     Kelola Logbooks
                 </a>
+                <a href="{{ route('company.finalreports.show', $app->participant_id) }}"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-md transition h-[36px]">
+                        <i data-feather="file-text" class="w-4 h-4 mr-1.5"></i>
+                        Laporan Akhir
+                </a>
             </td>
 
           </tr>

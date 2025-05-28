@@ -11,10 +11,13 @@ use App\Http\Controllers\Company\ProfileController;
 use App\Http\Controllers\Company\ParticipantController;
 use App\Http\Controllers\Company\TaskController;
 use App\Http\Controllers\Company\LogbookController;
+use App\Http\Controllers\Company\FinalReportController;
 use App\Http\Controllers\Participant\ParticipantIntershipsController;
 use App\Http\Controllers\Participant\ParticipantProfileController;
 use App\Http\Controllers\Participant\ParticipantTaskSubmissionController;
 use App\Http\Controllers\Participant\ParticipantLogbookController;
+
+use App\Http\Controllers\Participant\ParticipantFinalReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +73,7 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
         ->name('tasks.view-submission');
     Route::put('submissions/{submission}/review', [TaskController::class, 'reviewSubmission'])->name('tasks.review-submission');
     Route::resource('logbooks', LogbookController::class)->only(['index', 'show']);
+    Route::resource('finalreports', FinalReportController::class);
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
@@ -90,4 +94,5 @@ Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('pa
     Route::get('/tasks/{taskId}/edit', [ParticipantTaskSubmissionController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/{taskId}/update', [ParticipantTaskSubmissionController::class, 'update'])->name('tasks.update');
     Route::resource('logbooks', ParticipantLogbookController::class);
+    Route::resource('finalreports', ParticipantFinalReportController::class);
 });

@@ -8,23 +8,25 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Logbook extends Model
+class FinalReport extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $table = 'logbooks';
+    protected $table = 'finalreport';
     protected $keyType = 'string';
     public $incrementing = false;
 
     protected $fillable = [
         'application_id',
-        'tanggal',
-        'deskripsi',
-        'constraint',
+        'description',
+        'file_path',
+        'submission_date',
+        'status',
+        'feedback',
     ];
 
     protected $casts = [
-        'tanggal' => 'date',
+        'submission_date' => 'datetime',
     ];
 
     public function application(): BelongsTo

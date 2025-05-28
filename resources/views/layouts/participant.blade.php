@@ -69,8 +69,9 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#"
-                    class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50 text-gray-600">
+                  <a href="{{ route('participant.finalreports.index') }}"
+                    class="flex items-center p-2 rounded-lg text-sm hover:bg-blue-50
+                    {{ request()->routeIs('participant.finalreports.*') ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600' }}">
                     <i data-feather="file-text" class="w-4 h-4 mr-2"></i> Laporan Akhir
                   </a>
                 </li>
