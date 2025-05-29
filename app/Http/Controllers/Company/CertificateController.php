@@ -43,13 +43,4 @@ class CertificateController extends Controller
         return redirect()->route('company.certificates.create', $participantId)
                          ->with('success', 'Sertifikat berhasil diunggah.');
     }
-
-    public function download($participantId)
-    {
-        $application = InternshipApplication::where('participant_id', $participantId)->firstOrFail();
-
-        $certificate = Certificate::where('application_id', $application->id)->firstOrFail();
-
-        return Storage::disk('public')->download($certificate->file_path);
-    }
 }
