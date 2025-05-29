@@ -12,12 +12,13 @@ use App\Http\Controllers\Company\ParticipantController;
 use App\Http\Controllers\Company\TaskController;
 use App\Http\Controllers\Company\LogbookController;
 use App\Http\Controllers\Company\FinalReportController;
+use App\Http\Controllers\Company\CertificateController;
 use App\Http\Controllers\Participant\ParticipantIntershipsController;
 use App\Http\Controllers\Participant\ParticipantProfileController;
 use App\Http\Controllers\Participant\ParticipantTaskSubmissionController;
 use App\Http\Controllers\Participant\ParticipantLogbookController;
-
 use App\Http\Controllers\Participant\ParticipantFinalReportController;
+use App\Http\Controllers\Participant\ParticipantCertificateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,9 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::put('submissions/{submission}/review', [TaskController::class, 'reviewSubmission'])->name('tasks.review-submission');
     Route::resource('logbooks', LogbookController::class)->only(['index', 'show']);
     Route::resource('finalreports', FinalReportController::class);
+    Route::get('certificates/create/{participant}', [CertificateController::class, 'create'])->name('certificates.create');
+    Route::post('certificates/{participant}', [CertificateController::class, 'store'])->name('certificates.store');
+    Route::get('certificates/download/{participant}', [CertificateController::class, 'download'])->name('certificates.download');
 });
 
 Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('participant.')->group(function () {
@@ -95,4 +99,6 @@ Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('pa
     Route::put('/tasks/{taskId}/update', [ParticipantTaskSubmissionController::class, 'update'])->name('tasks.update');
     Route::resource('logbooks', ParticipantLogbookController::class);
     Route::resource('finalreports', ParticipantFinalReportController::class);
+    Route::get('certificates/{participant}', [ParticipantCertificateController::class, 'show'])->name('certificates.show');
+    Route::get('certificates/download/{certificate}', [ParticipantCertificateController::class, 'download'])->name('certificates.download');
 });

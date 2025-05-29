@@ -64,7 +64,6 @@
                     'rejected' => 'Ditolak',
                   ];
 
-                  // Jika status Accepted dan sudah konfirmasi (result_received), override class dan label
                   if ($application->status === 'Accepted' && !empty($application->result_received)) {
                     $badgeClass = 'bg-green-200 text-green-900';
                     $labelText = 'Diterima & Dikonfirmasi';

@@ -1,7 +1,7 @@
 @extends('layouts.participant')
 @section('title', 'Dashboard')
 @section('content')
-<div class="p-6">
+<div class="container mx-auto max-w-full px-4">
     <h1 class="text-2xl font-semibold mb-6">Dashboard Peserta</h1>
 
     <!-- Statistik Utama -->
@@ -94,7 +94,6 @@
                                     'rejected' => 'Ditolak',
                                 ];
 
-                                // Jika status Accepted dan sudah konfirmasi (result_received), override class dan label
                                 if ($application->status === 'Accepted' && !empty($application->result_received)) {
                                     $badgeClass = 'bg-green-200 text-green-900';
                                     $labelText = 'Diterima & Dikonfirmasi';
@@ -132,7 +131,7 @@
                 <div>
                     <h4 class="font-medium">{{ $task->title }}</h4>
                     <p class="text-sm text-gray-500">
-                        Deadline: {{ $task->deadline->format('d M Y H:i') }}
+                        Deadline: {{ $task->deadline->format('d M Y') }}
                     </p>
                 </div>
                 <div class="flex items-center space-x-4">

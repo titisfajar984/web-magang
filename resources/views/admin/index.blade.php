@@ -11,7 +11,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Total Perusahaan</p>
-                    <p class="text-2xl font-semibold">{{ $stats['totalCompanies'] }}</p>
+                    <p class="text-2xl font-semibold">{{ $stats['totalCompanies'] ?? 0 }}</p>
                 </div>
                 <div class="bg-blue-100 p-3 rounded-full">
                     <i data-feather="briefcase" class="w-6 h-6 text-blue-600"></i>
@@ -23,7 +23,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Magang Aktif</p>
-                    <p class="text-2xl font-semibold">{{ $stats['activeInternships'] }}</p>
+                    <p class="text-2xl font-semibold">{{ $stats['activeInternships'] ?? 0 }}</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-full">
                     <i data-feather="file-text" class="w-6 h-6 text-green-600"></i>
@@ -35,7 +35,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Total Peserta</p>
-                    <p class="text-2xl font-semibold">{{ $stats['totalParticipants'] }}</p>
+                    <p class="text-2xl font-semibold">{{ $stats['totalParticipants'] ?? 0 }}</p>
                 </div>
                 <div class="bg-purple-100 p-3 rounded-full">
                     <i data-feather="users" class="w-6 h-6 text-purple-600"></i>
@@ -47,7 +47,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Pending Lamaran</p>
-                    <p class="text-2xl font-semibold">{{ $stats['pendingApplications'] }}</p>
+                    <p class="text-2xl font-semibold">{{ $stats['pendingApplications'] ?? 0 }}</p>
                 </div>
                 <div class="bg-yellow-100 p-3 rounded-full">
                     <i data-feather="clock" class="w-6 h-6 text-yellow-600"></i>
@@ -62,22 +62,22 @@
         <div class="bg-white p-6 rounded-lg shadow-sm">
             <h3 class="text-lg font-semibold mb-4">Magang Terbaru</h3>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full table-auto border-collapse">
                     <thead>
-                        <tr class="text-left text-sm text-gray-500 border-b">
-                            <th class="pb-3">Posisi</th>
-                            <th class="pb-3">Perusahaan</th>
-                            <th class="pb-3">Kuota</th>
-                            <th class="pb-3">Tanggal</th>
+                        <tr class="text-left text-sm text-gray-500 border-b border-gray-300">
+                            <th class="pb-3 px-4 min-w-[120px]">Posisi</th>
+                            <th class="pb-3 px-4 min-w-[120px]">Perusahaan</th>
+                            <th class="pb-3 px-4 min-w-[60px] text-center">Kuota</th>
+                            <th class="pb-3 px-4 min-w-[150px]">Tanggal</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($latest['internships'] as $internship)
                         <tr class="hover:bg-gray-50">
-                            <td class="py-3">{{ $internship->title }}</td>
-                            <td>{{ $internship->company->name }}</td>
-                            <td>{{ $internship->quota }}</td>
-                            <td class="text-sm text-gray-500">
+                            <td class="py-3 px-4 break-words">{{ $internship->title }}</td>
+                            <td class="px-4 break-words">{{ $internship->company->name }}</td>
+                            <td class="text-center px-4">{{ $internship->quota }}</td>
+                            <td class="text-xs text-gray-500 px-4">
                                 {{ \Carbon\Carbon::parse($internship->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($internship->end_date)->format('d M') }}
                             </td>
                         </tr>
@@ -101,10 +101,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($latest['applications'] as $application)
+                        @forelse($latest['applications'] ?? [] as $application)
                         <tr class="hover:bg-gray-50">
                             <td class="py-3">{{ $application->participant->user->name }}</td>
-                            <td>{{ Str::limit($application->internship->title, 20) }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($application->internship->title, 20) }}</td>
                             <td>
                                 @php
                                 $statusColors = [
@@ -129,7 +129,11 @@
                                 {{ $application->created_at->format('d M Y') }}
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-gray-500">Tidak ada data lamaran terbaru.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

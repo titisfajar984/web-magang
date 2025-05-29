@@ -36,4 +36,14 @@ class InternshipApplication extends Model
     {
         return $this->belongsTo(ParticipantProfile::class, 'participant_id');
     }
+
+    public function finalReport()
+    {
+        return $this->hasOne(FinalReport::class, 'application_id');
+    }
+
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class, 'application_id');
+    }
 }

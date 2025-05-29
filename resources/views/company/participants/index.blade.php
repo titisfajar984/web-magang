@@ -35,18 +35,31 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 @php
-                    $key   = strtolower($app->status);
-                    $colors= ['pending'=>'bg-yellow-100 text-yellow-800','accepted'=>'bg-green-100 text-green-800','rejected'=>'bg-red-100 text-red-800'];
-                    $texts = ['pending'=>'Menunggu','accepted'=>'Diterima','rejected'=>'Ditolak'];
-                    $cls   = $colors[$key] ?? 'bg-gray-100 text-gray-800';
-                    $lbl   = $texts[$key]  ?? ucfirst($app->status);
-                    if($app->status === 'accepted' && $app->result_received){
-                        $cls = 'bg-green-200 text-green-900';
-                        $lbl = 'Diterima & Dikonfirmasi';
-                    }
+                  $statusKey = strtolower($app->status);
+
+                  $statusClasses = [
+                    'pending'  => 'bg-yellow-100 text-yellow-800',
+                    'accepted' => 'bg-green-100 text-green-800',
+                    'rejected' => 'bg-red-100 text-red-800',
+                  ];
+
+                  $statusTexts = [
+                    'pending'  => 'Menunggu',
+                    'accepted' => 'Diterima',
+                    'rejected' => 'Ditolak',
+                  ];
+
+                  if ($app->status === 'Accepted' && !empty($app->result_received)) {
+                    $badgeClass = 'bg-green-200 text-green-900';
+                    $labelText = 'Diterima & Dikonfirmasi';
+                  } else {
+                    $badgeClass = $statusClasses[$statusKey] ?? 'bg-gray-100 text-gray-800';
+                    $labelText = $statusTexts[$statusKey] ?? ucfirst($app->status);
+                  }
                 @endphp
-                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $cls }}">
-                    {{ $lbl }}
+
+                <span class="px-2 py-1 text-xs font-medium rounded-full {{ $badgeClass }}">
+                  {{ $labelText }}
                 </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -64,6 +77,11 @@
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-md transition h-[36px]">
                         <i data-feather="file-text" class="w-4 h-4 mr-1.5"></i>
                         Laporan Akhir
+                </a>
+                <a href="{{ route('company.certificates.create', $app->participant_id) }}"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-md transition h-[36px] mt-1">
+                        <i data-feather="file-plus" class="w-4 h-4 mr-1.5"></i>
+                        Kelola Sertifikat
                 </a>
             </td>
 

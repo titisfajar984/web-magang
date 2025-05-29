@@ -58,10 +58,6 @@
       <nav class="bg-white shadow flex items-center justify-between px-6 py-4">
         <h2 class="text-2xl font-semibold text-gray-800">@yield('title')</h2>
         <div class="flex items-center space-x-4">
-          <button class="relative p-2 hover:bg-gray-100 rounded-full">
-            <i data-feather="bell" class="w-6 h-6 text-gray-600"></i>
-            <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
           <div class="flex items-center space-x-2">
             @php
               $company = \App\Models\CompanyProfile::where('user_id', auth()->id())->first();

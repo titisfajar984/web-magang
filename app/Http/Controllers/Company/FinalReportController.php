@@ -25,7 +25,7 @@ class FinalReportController extends Controller
 
         $finalReport = FinalReport::with('application.participant.user')
             ->where('application_id', $application->id)
-            ->firstOrFail();
+            ->first();
 
         return view('company.finalreports.show', compact('finalReport', 'participant'));
     }
