@@ -18,13 +18,15 @@ class FinalReportController extends Controller
 
         $participant = ParticipantProfile::with('user')->findOrFail($participantId);
 
-        $application = InternshipApplication::with('internship')
+        $application = InternshipApplication::with(['internship'])
             ->where('participant_id', $participantId)
             ->whereHas('internship', fn ($q) => $q->where('company_id', $company->id))
+            ->latest()
             ->firstOrFail();
 
-        $finalReport = FinalReport::with('application.participant.user')
+        $finalReport = FinalReport::with(['application.participant.user'])
             ->where('application_id', $application->id)
+            ->latest()
             ->first();
 
         return view('company.finalreports.show', compact('finalReport', 'participant'));
