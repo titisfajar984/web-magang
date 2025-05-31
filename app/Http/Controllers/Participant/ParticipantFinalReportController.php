@@ -37,6 +37,13 @@ class ParticipantFinalReportController extends Controller
         $request->validate([
             'description' => 'required|string|max:255',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ],
+        [
+            'description.required' => 'Deskripsi wajib diisi.',
+            'description.max' => 'Deskripsi tidak boleh lebih dari 255 karakter.',
+            'file.file' => 'File harus berupa file yang valid.',
+            'file.mimes' => 'File harus berformat pdf, doc, atau docx.',
+            'file.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
         $participant = auth()->user()->participantProfile;

@@ -38,6 +38,13 @@ class ParticipantLogbookController extends Controller
             'tanggal' => 'required|date',
             'deskripsi' => 'required|string|max:255',
             'constraint' => 'nullable|string|max:255',
+        ],
+        [
+            'tanggal.required' => 'Tanggal wajib diisi.',
+            'tanggal.date' => 'Tanggal harus berupa tanggal yang valid.',
+            'deskripsi.required' => 'Deskripsi wajib diisi.',
+            'deskripsi.max' => 'Deskripsi tidak boleh lebih dari 255 karakter.',
+            'constraint.max' => 'Constraint tidak boleh lebih dari 255 karakter.',
         ]);
 
         $participant = auth()->user()->participantProfile;

@@ -37,6 +37,11 @@ class FinalReportController extends Controller
         $request->validate([
             'status' => 'required|in:reviewed,approved,rejected',
             'feedback' => 'nullable|string|max:1000',
+        ],
+        [
+            'status.required' => 'Status wajib diisi.',
+            'status.in' => 'Status harus salah satu dari: reviewed, approved, atau rejected.',
+            'feedback.max' => 'Feedback tidak boleh lebih dari 1000 karakter.',
         ]);
 
         $finalReport = FinalReport::with('application.internship')->findOrFail($id);

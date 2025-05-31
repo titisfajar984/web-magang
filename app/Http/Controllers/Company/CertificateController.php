@@ -25,6 +25,12 @@ class CertificateController extends Controller
 
         $request->validate([
             'certificate' => 'required|file|mimes:pdf|max:2048',
+        ],
+        [
+            'certificate.required' => 'Sertifikat wajib diunggah.',
+            'certificate.file' => 'File harus berupa file yang valid.',
+            'certificate.mimes' => 'File harus berformat PDF.',
+            'certificate.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
         // Hapus file lama jika ada

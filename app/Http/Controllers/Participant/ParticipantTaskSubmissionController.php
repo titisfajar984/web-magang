@@ -70,6 +70,11 @@ class ParticipantTaskSubmissionController extends Controller
         $request->validate([
             'submission_text' => 'required|string',
             'attachment_file' => 'nullable|file|max:5120|mimes:pdf,doc,docx,jpg,png',
+        ],
+        [
+            'submission_text.required' => 'Teks jawaban wajib diisi.',
+            'attachment_file.max' => 'Ukuran file maksimal 5 MB.',
+            'attachment_file.mimes' => 'File harus berupa PDF, DOC, DOCX, JPG, atau PNG.',
         ]);
 
         $task = Task::findOrFail($taskId);

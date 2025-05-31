@@ -165,7 +165,8 @@ class TaskController extends Controller
             'status' => 'required|in:To Do,In Progress,Done',
             'internship_id' => 'required|exists:internship_postings,id',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
-        ], [
+        ],
+        [
             'internship_id.required' => 'Pilih lowongan yang sesuai',
             'file.mimes' => 'File harus berupa dokumen atau gambar',
             'file.max' => 'Ukuran file maksimal 5MB',
