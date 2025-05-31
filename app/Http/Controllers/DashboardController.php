@@ -75,6 +75,24 @@ class DashboardController extends Controller
     {
         $participant = auth()->user()->participantProfile;
 
+        if (!$participant) {
+            // Jika profil peserta belum dibuat
+            $stats = [
+                'total_applications' => 0,
+                'active_internships' => 0,
+                'pending_tasks' => 0,
+                'completed_tasks' => 0,
+            ];
+
+            $latest = [
+                'applications' => [],
+                'tasks' => [],
+            ];
+
+            return view('participant.index', compact('stats', 'latest'))
+                ->with('warning', 'Silakan lengkapi profil peserta terlebih dahulu.');
+        }
+
         $taskIds = Task::whereHas('internship.applications', function ($query) use ($participant) {
             $query->where('participant_id', $participant->id)
                 ->where('status', 'accepted');
@@ -116,4 +134,5 @@ class DashboardController extends Controller
 
         return view('participant.index', compact('stats', 'latest'));
     }
+
 }

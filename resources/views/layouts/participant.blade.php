@@ -28,6 +28,10 @@
               ['route' => 'participant.apply.index', 'icon' => 'file-text', 'label' => 'Riwayat'],
               ['route' => 'participant.profile.index', 'icon' => 'user', 'label' => 'Profil'],
             ];
+            use App\Models\ParticipantProfile;
+
+            $participant = auth()->user()?->participantProfile;
+            $hasAcceptedInternship = $participant?->applications()->where('status', 'accepted')->exists();
         @endphp
 
         @foreach($menus as $item)
@@ -40,7 +44,7 @@
             </a>
           </li>
 
-          @if($item['label'] === 'Riwayat')
+          @if($item['label'] === 'Riwayat' && $hasAcceptedInternship)
             <!-- Menu Kegiatan -->
             <li class="relative">
               <button type="button" @click="openKegiatan = !openKegiatan"
@@ -106,7 +110,6 @@
         <h2 class="text-2xl font-semibold text-gray-800">@yield('title')</h2>
         <div class="flex items-center space-x-4">
           @php
-            use App\Models\ParticipantProfile;
             $profile = ParticipantProfile::where('user_id', auth()->id())->first();
             $userName = auth()->user() ? auth()->user()->name : '';
           @endphp
