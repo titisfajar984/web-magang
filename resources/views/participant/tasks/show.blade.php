@@ -57,7 +57,9 @@
     <!-- Submission Section -->
     <div class="bg-white shadow rounded-lg p-6 w-full">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Pengumpulan Tugas</h2>
-        <!-- Tampilkan pengumpulan -->
+
+        @if($submission)
+            <!-- Tampilkan status pengumpulan -->
             <div class="mb-6 p-4 border border-green-100 rounded-lg bg-green-50">
                 <div class="flex items-start">
                     <div class="flex-shrink-0">
@@ -77,7 +79,8 @@
                     </div>
                 </div>
             </div>
-        @if($submission)
+
+            <!-- Status Review -->
             <div class="mb-6 p-4 border rounded-lg w-full
                 @if($submission->review_status === 'approved') border-green-200 bg-green-50
                 @elseif($submission->review_status === 'rejected') border-red-200 bg-red-50
@@ -92,19 +95,12 @@
                         <i data-feather="x-circle" class="h-5 w-5 text-red-500"></i>
                         @elseif($submission->review_status === 'revision')
                         <i data-feather="alert-circle" class="h-5 w-5 text-yellow-500"></i>
-                        @elseif($submission->review_status === 'pending')
-                        <i data-feather="clock" class="h-5 w-5 text-gray-500"></i>
                         @else
                         <i data-feather="clock" class="h-5 w-5 text-gray-500"></i>
                         @endif
                     </div>
                     <div class="ml-3 flex-1">
-                        <h3 class="text-sm font-medium
-                            @if($submission->review_status === 'approved') text-green-800
-                            @elseif($submission->review_status === 'rejected') text-red-800
-                            @elseif($submission->review_status === 'revision') text-yellow-800
-                            @elseif($submission->review_status === 'pending') text-gray-800
-                            @else text-gray-800 @endif">
+                        <h3 class="text-sm font-medium text-gray-800">
                             @if($submission->review_status === 'approved')
                                 Jawaban telah disetujui
                             @elseif($submission->review_status === 'rejected')
@@ -113,18 +109,14 @@
                                 Jawaban perlu revisi
                             @elseif($submission->review_status === 'pending')
                                 Menunggu review perusahaan
+                            @else
+                                Belum ada status review
                             @endif
                         </h3>
-                        <div class="mt-2 text-sm
-                            @if($submission->review_status === 'approved') text-green-700
-                            @elseif($submission->review_status === 'rejected') text-red-700
-                            @elseif($submission->review_status === 'revision') text-yellow-700
-                            @elseif($submission->review_status === 'pending') text-gray-700
-                            @else text-gray-700 @endif">
-                            <p>
-                                Dikirim pada {{ \Carbon\Carbon::parse($submission->updated_at)->timezone('Asia/Jakarta')->format('d M Y') }}
-                                @if(\Carbon\Carbon::parse($submission->updated_at)->timezone('Asia/Jakarta')->gt(\Carbon\Carbon::parse($task->deadline)->timezone('Asia/Jakarta')))
-                                    <span class="ml-2 font-medium">(Terlambat)</span>
+                        <div class="mt-2 text-sm text-gray-700">
+                            <p>Dikirim pada {{ \Carbon\Carbon::parse($submission->updated_at)->timezone('Asia/Jakarta')->format('d M Y') }}
+                                @if(\Carbon\Carbon::parse($submission->updated_at)->gt($task->deadline))
+                                <span class="ml-2 font-medium">(Terlambat)</span>
                                 @endif
                             </p>
                             @if(in_array($submission->review_status, ['rejected', 'revision']) && $submission->review_notes)
@@ -138,6 +130,7 @@
                 </div>
             </div>
 
+            <!-- Jawaban -->
             <div class="mb-4">
                 <h3 class="text-sm font-medium text-gray-700 mb-2">Jawaban Anda</h3>
                 <div class="prose max-w-none bg-gray-50 p-4 rounded-lg">
@@ -145,6 +138,7 @@
                 </div>
             </div>
 
+            <!-- Lampiran -->
             @if($submission->attachment_file)
             <div class="mb-4">
                 <h3 class="text-sm font-medium text-gray-700 mb-2">File Lampiran</h3>
@@ -156,6 +150,7 @@
             </div>
             @endif
 
+            <!-- Tombol Edit -->
             <div class="flex justify-end">
                 <a href="{{ route('participant.tasks.edit', $task->id) }}"
                    class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -163,8 +158,9 @@
                     Edit Jawaban
                 </a>
             </div>
+
         @else
-            <!-- Submission Form -->
+            <!-- Form Pengumpulan -->
             <form method="POST" action="{{ route('participant.tasks.submit', $task->id) }}" enctype="multipart/form-data">
                 @csrf
 
@@ -177,16 +173,14 @@
 
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Lampiran File (Opsional)</label>
-                    <div class="mt-1 flex items-center">
-                        <input type="file" name="attachment_file" id="attachment_file"
-                               class="p-2 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none">
-                    </div>
+                    <input type="file" name="attachment_file" id="attachment_file"
+                           class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none p-2">
                     <p class="mt-1 text-sm text-gray-500">Format file: PDF, DOC, DOCX, JPG, PNG (Maks. 5MB)</p>
                 </div>
 
                 <div class="flex justify-end">
                     <button type="submit"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <i data-feather="upload" class="w-4 h-4 mr-2"></i>
                         Kumpulkan Tugas
                     </button>
