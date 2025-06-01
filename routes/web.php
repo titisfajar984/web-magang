@@ -31,13 +31,11 @@ use App\Http\Controllers\Participant\ParticipantCertificateController;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
 
-Route::get('/participant', function () {
-    return view('landing-page.participant');
-});
+Route::get('/', [DashboardController::class, 'showParticipantPage']);
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');

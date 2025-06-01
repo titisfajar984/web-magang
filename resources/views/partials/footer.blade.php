@@ -17,7 +17,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 25">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2.5498C15.87 2.5498 19 5.6798 19 9.5498C19 14.7998 12 22.5498 12 22.5498C12 22.5498 5 14.7998 5 9.5498C5 5.6798 8.13 2.5498 12 2.5498ZM7 9.5498C7 12.3998 9.92 16.7598 12 19.4298C14.12 16.7398 17 12.4298 17 9.5498C17 6.7898 14.76 4.5498 12 4.5498C9.24 4.5498 7 6.7898 7 9.5498ZM12 12.0498C10.6193 12.0498 9.5 10.9305 9.5 9.5498C9.5 8.16909 10.6193 7.0498 12 7.0498C13.3807 7.0498 14.5 8.16909 14.5 9.5498C14.5 10.9305 13.3807 12.0498 12 12.0498Z" fill="white"/>
                 </svg>
-                <p class="flex-1">T. Imersa Solusi Teknologi, RT 001 / RW 005, Lobeser Timur, Baron, Nganjuk, Jawa Timur 64394</p>
+                <p class="flex-1">PT. Imersa Solusi Teknologi, RT 001 / RW 005, Lobeser Timur, Baron, Nganjuk, Jawa Timur 64394</p>
             </div>
 
             <div class="flex items-start gap-x-3">

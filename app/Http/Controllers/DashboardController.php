@@ -135,4 +135,15 @@ class DashboardController extends Controller
         return view('participant.index', compact('stats', 'latest'));
     }
 
+    public function showParticipantPage()
+    {
+        $internships = InternshipPosting::with('company')
+            ->where('status', 'active')
+            ->inRandomOrder()
+            ->take(6)
+            ->get();
+
+        return view('landing-page.participant', compact('internships'));
+    }
+
 }

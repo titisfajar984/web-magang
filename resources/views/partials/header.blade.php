@@ -19,7 +19,7 @@
 
     <div id="mobile-menu"
       class="absolute top-full left-0 -translate-x-full sm:translate-x-0 sm:static flex flex-col sm:flex-row items-center sm:gap-x-4 gap-y-3 sm:gap-y-0 w-full sm:w-auto transition-all duration-300 z-40 sm:z-auto bg-[#EBEBEB8A] sm:bg-transparent shadow-md sm:shadow-none rounded-b-xl sm:rounded-none px-6 py-4 sm:p-0">
-      
+
       <a href="{{ route('login') }}"
         class="text-sm sm:text-[15px] md:text-base lg:text-[17px] font-semibold text-[#4640DE] border-b sm:border-none w-full sm:w-fit text-center py-2 px-6 sm:rounded-sm transition duration-300 hover:bg-[#ecebfc] focus:outline-none focus-visible:ring focus-visible:ring-[#4640DE]/50">
         Masuk
