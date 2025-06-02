@@ -40,7 +40,7 @@
           <thead class="bg-gray-50">
             @php
                 $showActionColumn = $applications->contains(function($lamar) {
-                    return $lamar->status === 'Accepted' && ! $lamar->result_received;
+                    return $lamar->status === 'accepted' && ! $lamar->result_received;
                 });
             @endphp
             <tr>
@@ -61,7 +61,7 @@
               $texts = ['pending'=>'Menunggu','accepted'=>'Diterima','rejected'=>'Ditolak'];
               $cls   = $colors[$key] ?? 'bg-gray-100 text-gray-800';
               $lbl   = $texts[$key]  ?? ucfirst($lamar->status);
-              if($lamar->status==='Accepted' && $lamar->result_received){
+              if($lamar->status==='accepted' && $lamar->result_received){
                   $cls = 'bg-green-200 text-green-900';
                   $lbl = 'Diterima & Dikonfirmasi';
               }
@@ -83,7 +83,7 @@
               @if($showActionColumn)
                 <td class="px-6 py-4">
                 <div class="flex items-center justify-end">
-                    @if($lamar->status === 'Accepted' && ! $lamar->result_received)
+                    @if($lamar->status === 'accepted' && ! $lamar->result_received)
                     <a href="{{ route('participant.applications.confirm-receive', $lamar->id) }}" class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 inline-block text-center">
                         Konfirmasi Hasil
                     </a>

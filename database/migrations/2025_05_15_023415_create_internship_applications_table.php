@@ -19,7 +19,7 @@ return new class extends Migration
                 ->constrained('internship_postings')
                 ->cascadeOnDelete();
 
-            $table->enum('status', ['Pending', 'Accepted', 'Rejected']);
+            $table->enum('status', ['pending', 'accepted', 'rejected']);
             $table->date('tanggal');
             $table->timestamps();
 

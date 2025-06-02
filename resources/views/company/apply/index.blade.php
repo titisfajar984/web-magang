@@ -92,9 +92,9 @@
                     @method('PUT')
                     <select name="status" onchange="this.form.submit()"
                       class="text-sm h-[36px] border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                      <option value="pending" {{ $application->status === 'Pending' ? 'selected' : '' }}>Pending</option>
-                      <option value="accepted" {{ $application->status === 'Accepted' ? 'selected' : '' }}>Diterima</option>
-                      <option value="rejected" {{ $application->status === 'Rejected' ? 'selected' : '' }}>Ditolak</option>
+                      <option value="pending" {{ $application->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                      <option value="accepted" {{ $application->status === 'accepted' ? 'selected' : '' }}>Diterima</option>
+                      <option value="rejected" {{ $application->status === 'rejected' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                   </form>
                 </div>

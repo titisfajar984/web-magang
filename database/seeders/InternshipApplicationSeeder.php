@@ -25,7 +25,7 @@ class InternshipApplicationSeeder extends Seeder
                 'id' => Str::uuid(),
                 'participant_id' => $participant->id,
                 'internship_posting_id' => $posting->id,
-                'status' => $faker->randomElement(['Pending', 'Accepted', 'Rejected']),
+                'status' => $faker->randomElement(['pending', 'accepted', 'rejected']),
                 'tanggal' => $faker->dateTimeBetween('-1 month', 'now')->format('Y-m-d'),
                 'created_at' => now(),
                 'updated_at' => now(),
