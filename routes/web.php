@@ -84,7 +84,7 @@ Route::middleware(['auth', 'role:participant'])->prefix('participant')->name('pa
     Route::get('/index', [DashboardController::class, 'participantIndex'])->name('index');
     Route::get('profile', [ParticipantProfileController::class, 'index'])->name('profile.index');
     Route::put('profile', [ParticipantProfileController::class, 'update'])->name('profile.update');
-    Route::resource('internships', ParticipantIntershipsController::class);
+    Route::resource('internships', ParticipantIntershipsController::class)->names('internships');
     Route::post('internships/{id}/apply', [ParticipantIntershipsController::class, 'apply'])->name('internships.apply');
     Route::get('internships/{id}/confirmation', [ParticipantIntershipsController::class, 'confirmPage'])->name('internships.confirmation');
     Route::get('apply', [ParticipantIntershipsController::class, 'myApplications'])->name('apply.index');
