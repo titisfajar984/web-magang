@@ -45,7 +45,6 @@
         background-color: rgba(255, 255, 255, 0.65);
         backdrop-filter: saturate(180%) blur(12px);
         -webkit-backdrop-filter: saturate(180%) blur(12px);
-        /* box-shadow: 0 2px 10px rgb(0 0 0 / 0.1); */
     }
     </style>
 

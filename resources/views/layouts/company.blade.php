@@ -14,10 +14,17 @@
 <body class="bg-gray-100">
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-lg">
-      <div class="p-6 flex items-center space-x-3">
-        <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo" class="h-12 w-12">
-        <h1 class="text-xl font-semibold text-gray-800">Magang Berdampak</h1>
+    <aside id="menu-navigation" class="h-full bg-white shadow-lg transition-all duration-300" data-open="false">
+      <div class="p-6 flex gap-x-4 items-center justify-between">
+        <div class="flex gap-x-2 items-center">
+          <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo">
+          <h1 class="text-lg sm:text-xl font-semibold text-gray-800">Magang Berdampak</h1>
+        </div>
+        <button id="menu-close" class="sm:hidden focus:outline-none bg-white">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       <ul class="space-y-2 px-4">
@@ -56,7 +63,15 @@
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Navbar -->
       <nav class="bg-white shadow flex items-center justify-between px-6 py-4">
-        <h2 class="text-2xl font-semibold text-gray-800">@yield('title')</h2>
+        <div class="flex gap-x-2 items-center">
+          <button id="menu-toggle" class="text-gray-800 focus:outline-none bg-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+            </svg>
+          </button>
+          <h2 class="text-2xl font-semibold text-gray-800">@yield('title')</h2>
+        </div>
         <div class="flex items-center space-x-4">
           <div class="flex items-center space-x-2">
             @php
@@ -96,5 +111,6 @@
   <script src="https://unpkg.com/flowbite@1.7.0/dist/flowbite.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
   <script>feather.replace()</script>
+  <script src="{{ asset('js/navigation.js') }}"></script>
 </body>
 </html>
