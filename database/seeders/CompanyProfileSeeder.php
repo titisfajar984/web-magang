@@ -12,9 +12,8 @@ class CompanyProfileSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create('id_ID');
 
-        // Ambil 10 user dengan role company
         $companies = User::where('role', 'company')->limit(10)->get();
 
         foreach ($companies as $user) {
@@ -29,5 +28,6 @@ class CompanyProfileSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+
     }
 }

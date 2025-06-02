@@ -13,14 +13,12 @@ class InternshipApplicationSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create('id_ID');
 
-        // Ambil data peserta dan postingan magang
         $participants = ParticipantProfile::limit(10)->get();
         $postings = InternshipPosting::limit(10)->get();
 
         foreach ($participants as $participant) {
-            // Random pilih salah satu posting magang
             $posting = $postings->random();
 
             DB::table('internship_applications')->insert([
@@ -33,5 +31,6 @@ class InternshipApplicationSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+
     }
 }

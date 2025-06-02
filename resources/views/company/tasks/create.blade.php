@@ -9,7 +9,7 @@
       <h1 class="text-2xl font-bold text-gray-900">Buat Tugas Baru</h1>
       <p class="text-gray-500 mt-1">Isi formulir untuk membuat tugas baru</p>
     </div>
-    <a href="{{ route('company.tasks.index') }}"
+    <a href="{{ isset($participant) ? route('company.tasks.index', ['participant_id' => $participant->id]) : route('company.tasks.index') }}"
        class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
       <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
       Kembali
@@ -41,40 +41,72 @@
       @endif
 
       <div class="grid grid-cols-1 gap-6">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Lowongan Magang *</label>
-          <select name="internship_id" required
-                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-            @foreach($postings as $posting)
-              <option value="{{ $posting->id }}" {{ old('internship_id') == $posting->id ? 'selected' : '' }}>
-                {{ $posting->title }}
-              </option>
-            @endforeach
-          </select>
-        </div>
+        @if(isset($participant))
+            <input type="hidden" name="participant_id" value="{{ $participant->id }}">
+            @php
+                $application = $participant->applications()
+                    ->where('status', 'accepted')
+                    ->where('result_received', true)
+                    ->whereHas('internship', fn($q) => $q->where('company_id', Auth::user()->companyProfile->id))
+                    ->first();
+            @endphp
+
+            @if($application)
+                <input type="hidden" name="application_id" value="{{ $application->id }}">
+            @else
+                <div class="text-red-500">Peserta ini belum memiliki aplikasi yang diterima di perusahaan Anda.</div>
+            @endif
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Peserta Magang</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
+                    <div class="flex items-center">
+                        <img class="h-10 w-10 rounded-full object-cover mr-3"
+                            src="{{ $participant->photo ? Storage::url($participant->photo) : asset('images/default-avatar.png') }}"
+                            alt="{{ $participant->user->name }}">
+                        <div>
+                            <p class="font-medium text-gray-900">{{ $participant->user->name }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div>
+                <label for="application_id" class="block text-sm font-medium text-gray-700 mb-2">Peserta Magang *</label>
+                <select id="application_id" name="application_id" required
+                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                    <option value="">Pilih peserta</option>
+                    @foreach($applications as $app)
+                        <option value="{{ $app->id }}" {{ old('application_id') == $app->id ? 'selected' : '' }}>
+                            {{ $app->participant->user->name }} ({{ $app->participant->user->email }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        @endif
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Nama Tugas *</label>
           <input type="text" name="name" value="{{ old('name') }}" required
-                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                 class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
           <textarea name="description" rows="3"
-                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ old('description') }}</textarea>
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ old('description') }}</textarea>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Deadline *</label>
           <input type="date" name="deadline" value="{{ old('deadline') }}" required
-                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                 class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Upload File *</label>
           <input type="file" name="file" required
-                 class="form-input @error('file') border-red-500 @enderror">
+                 class="form-input w-full rounded-md border border-gray-300 shadow-sm py-2 px-3 @error('file') border-red-500 @enderror">
           @error('file')
             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
           @enderror
@@ -83,7 +115,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
           <select name="status" required
-                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             <option value="To Do" {{ old('status') == 'To Do' ? 'selected' : '' }}>Ditugaskan</option>
             <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>Sedang Dikerjakan</option>
             <option value="Done" {{ old('status') == 'Done' ? 'selected' : '' }}>Selesai</option>
@@ -92,7 +124,7 @@
       </div>
 
       <div class="flex justify-end space-x-3 pt-6">
-        <a href="{{ route('company.tasks.index') }}"
+        <a href="{{ isset($participant) ? route('company.tasks.index', ['participant_id' => $participant->id]) : route('company.tasks.index') }}"
            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Batal
         </a>

@@ -19,21 +19,23 @@ class TaskController extends Controller
     {
         $company = Auth::user()->companyProfile;
         $participantId = $request->query('participant_id');
-
-        $query = Task::with(['internship', 'application.participant.user'])
-            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id));
-
         $participant = null;
+
+        $query = Task::with(['application.internship', 'application.participant.user'])
+        ->whereHas('application.internship', fn($q) => $q->where('company_id', $company->id));
+
         if ($participantId) {
             $participant = ParticipantProfile::with('user')->findOrFail($participantId);
 
-            $hasApplication = InternshipApplication::where('participant_id', $participantId)
+            $application = InternshipApplication::where('participant_id', $participant->id)
                 ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
-                ->exists();
+                ->where('status', 'accepted')
+                ->where('result_received', true)
+                ->first();
 
-            abort_unless($hasApplication, 403, 'Peserta tidak terdaftar di perusahaan Anda');
+            abort_unless($application, 403, 'Peserta tidak memiliki aplikasi magang yang diterima di perusahaan Anda.');
 
-            $query->whereHas('application', fn($q) => $q->where('participant_id', $participantId));
+            $query->where('application_id', $application->id);
         }
 
         $tasks = $query->latest()->paginate(15);
@@ -41,59 +43,14 @@ class TaskController extends Controller
         return view('company.tasks.index', compact('tasks', 'participant'));
     }
 
-    public function tasksByParticipant(ParticipantProfile $participant)
+    public function create(Request $request)
     {
         $company = Auth::user()->companyProfile;
+        $participantId = $request->query('participant_id');
 
-        abort_unless(
-            InternshipApplication::where('participant_id', $participant->id)
-                ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
-                ->exists(),
-            403,
-            'Peserta tidak terdaftar di perusahaan Anda'
-        );
-
-        $tasks = Task::with(['internship', 'application.participant.user'])
-            ->whereHas('application', fn($q) => $q->where('participant_id', $participant->id))
-            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
-            ->latest()
-            ->paginate(15);
-
-        return view('company.tasks.index', [
-            'tasks' => $tasks,
-            'participant' => $participant->load('user')
-        ]);
-    }
-
-    public function updateStatus(Request $request, Task $task)
-    {
-        $company = Auth::user()->companyProfile;
-
-        abort_unless($task->internship->company_id === $company->id, 403);
-
-        $validated = $request->validate([
-            'status' => 'required|in:To Do,In Progress,Done',
-        ]);
-
-        $task->status = $validated['status'];
-        $task->save();
-
-        return back()->with('success', 'Status tugas berhasil diperbarui.');
-    }
-
-
-    public function create()
-    {
-        $company = Auth::user()->companyProfile;
-
-        $postings = InternshipPosting::where('company_id', $company->id)
-            ->where('status', 'active')
-            ->get();
-
-        if ($postings->isEmpty()) {
-            return redirect()->route('company.tasks.index')
-                ->with('error', 'Anda harus memiliki lowongan aktif sebelum membuat tugas');
-        }
+        $participant = $participantId
+            ? ParticipantProfile::with('user')->findOrFail($participantId)
+            : null;
 
         $applications = InternshipApplication::with('participant.user')
             ->where('status', 'accepted')
@@ -101,79 +58,80 @@ class TaskController extends Controller
             ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
             ->get();
 
-        return view('company.tasks.create', compact('postings', 'applications'));
+        return view('company.tasks.create', compact('applications', 'participant'));
     }
 
     public function store(Request $request)
     {
         $company = Auth::user()->companyProfile;
 
+        $participantId = $request->input('participant_id');
+
+        if ($participantId) {
+            // Ambil aplikasi berdasarkan participant_id
+            $application = InternshipApplication::where('participant_id', $participantId)
+                ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
+                ->where('status', 'accepted')
+                ->where('result_received', true)
+                ->firstOrFail();
+
+            $request->merge(['application_id' => $application->id]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'deadline' => 'required|date|after_or_equal:today',
             'status' => 'required|in:To Do,In Progress,Done',
-            'internship_id' => 'required|exists:internship_postings,id',
+            'application_id' => 'required|exists:internship_applications,id',
             'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
-        ], [
-            'internship_id.required' => 'Pilih lowongan yang sesuai',
-            'file.required' => 'File tugas harus diunggah',
-            'file.mimes' => 'File harus berupa dokumen atau gambar',
-            'file.max' => 'Ukuran file maksimal 5MB',
         ]);
 
-        $internship = InternshipPosting::where('id', $validated['internship_id'])
-            ->where('company_id', $company->id)
+        $application = InternshipApplication::where('id', $validated['application_id'])
+            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
             ->firstOrFail();
 
         if ($request->hasFile('file')) {
             $validated['file_path'] = $request->file('file')->store('tasks', 'public');
         }
 
+        $validated['internship_id'] = $application->internship_id;
+
         Task::create($validated);
 
-        return redirect()->route('company.tasks.index')->with('success', 'Tugas berhasil dibuat');
+        return redirect()->route('company.tasks.index', ['participant_id' => $application->participant_id])
+            ->with('success', 'Tugas berhasil dibuat');
     }
+
 
     public function edit(Task $task)
     {
         $company = Auth::user()->companyProfile;
 
-        abort_unless($task->internship->company_id === $company->id, 403);
-
-        $postings = InternshipPosting::where('company_id', $company->id)->get();
-
         $applications = InternshipApplication::with('participant.user')
             ->where('status', 'accepted')
             ->where('result_received', true)
-            ->where('internship_posting_id', $task->internship_id)
+            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
             ->get();
 
-        return view('company.tasks.edit', compact('task', 'postings', 'applications'));
+        return view('company.tasks.edit', compact('task', 'applications'));
     }
 
     public function update(Request $request, Task $task)
     {
         $company = Auth::user()->companyProfile;
 
-        abort_unless($task->internship->company_id === $company->id, 403);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'deadline' => 'required|date|after_or_equal:today',
             'status' => 'required|in:To Do,In Progress,Done',
-            'internship_id' => 'required|exists:internship_postings,id',
+            'application_id' => 'required|exists:internship_applications,id',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
-        ],
-        [
-            'internship_id.required' => 'Pilih lowongan yang sesuai',
-            'file.mimes' => 'File harus berupa dokumen atau gambar',
-            'file.max' => 'Ukuran file maksimal 5MB',
         ]);
 
-        $internship = InternshipPosting::where('id', $validated['internship_id'])
-            ->where('company_id', $company->id)
+        $application = InternshipApplication::where('id', $validated['application_id'])
+            ->whereHas('internship', fn($q) => $q->where('company_id', $company->id))
             ->firstOrFail();
 
         if ($request->hasFile('file')) {
@@ -183,24 +141,41 @@ class TaskController extends Controller
             $validated['file_path'] = $request->file('file')->store('tasks', 'public');
         }
 
+        $validated['internship_id'] = $application->internship_id;
+
         $task->update($validated);
 
-        return redirect()->route('company.tasks.index')->with('success', 'Tugas berhasil diperbarui');
+        return redirect()->route('company.tasks.index', ['participant_id' => $application->participant_id])
+            ->with('success', 'Tugas berhasil diperbarui');
     }
 
     public function destroy(Task $task)
     {
         $company = Auth::user()->companyProfile;
 
-        abort_unless($task->internship->company_id === $company->id, 403);
-
         if ($task->file_path) {
             Storage::disk('public')->delete($task->file_path);
         }
 
+        $participantId = $task->application->participant_id;
+
         $task->delete();
 
-        return redirect()->back()->with('success', 'Tugas berhasil dihapus');
+        return redirect()->route('company.tasks.index', ['participant_id' => $participantId])
+            ->with('success', 'Tugas berhasil dihapus');
+    }
+
+    public function updateStatus(Request $request, Task $task)
+    {
+        $company = Auth::user()->companyProfile;
+
+        $validated = $request->validate([
+            'status' => 'required|in:To Do,In Progress,Done',
+        ]);
+
+        $task->update(['status' => $validated['status']]);
+
+        return back()->with('success', 'Status tugas berhasil diperbarui.');
     }
 
     public function viewSubmission(TaskSubmission $submission)
@@ -208,7 +183,7 @@ class TaskController extends Controller
         $company = Auth::user()->companyProfile;
 
         abort_unless(
-            $submission->task->internship->company_id === $company->id,
+            $submission->task->application->internship->company_id === $company->id,
             403,
             'Anda tidak memiliki akses ke jawaban ini'
         );
@@ -216,7 +191,7 @@ class TaskController extends Controller
         return view('company.tasks.view-submission', [
             'task' => $submission->task,
             'submission' => $submission,
-            'participant' => $submission->user->participantProfile
+            'participant' => $submission->task->application->participant
         ]);
     }
 
@@ -225,7 +200,7 @@ class TaskController extends Controller
         $company = Auth::user()->companyProfile;
 
         abort_unless(
-            $submission->task->internship->company_id === $company->id,
+            $submission->task->application->internship->company_id === $company->id,
             403,
             'Anda tidak memiliki akses ke jawaban ini'
         );
@@ -242,5 +217,6 @@ class TaskController extends Controller
         return redirect()->route('company.tasks.view-submission', $submission)
                         ->with('success', 'Ulasan berhasil disimpan.');
     }
-
 }
+
+

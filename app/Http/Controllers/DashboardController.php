@@ -47,7 +47,7 @@ class DashboardController extends Controller
         $stats = [
             'active_internships' => $company->internships()->where('status', 'active')->count(),
             'total_applications' => InternshipApplication::whereIn('internship_posting_id', $internshipIds)->count(),
-            'pending_tasks' => Task::whereIn('internship_id', $internshipIds)->where('status', 'To Do')->count(),
+            'pending_tasks' => Task::whereIn('application_id', $internshipIds)->where('status', 'To Do')->count(),
             'new_applicants' => InternshipApplication::whereIn('internship_posting_id', $internshipIds)
                 ->whereDate('created_at', today())
                 ->count(),
@@ -93,7 +93,7 @@ class DashboardController extends Controller
                 ->with('warning', 'Silakan lengkapi profil peserta terlebih dahulu.');
         }
 
-        $taskIds = Task::whereHas('internship.applications', function ($query) use ($participant) {
+        $taskIds = Task::whereHas('application', function ($query) use ($participant) {
             $query->where('participant_id', $participant->id)
                 ->where('status', 'accepted');
         })->pluck('id');

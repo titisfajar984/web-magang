@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->foreignUuid('internship_id')
-                ->constrained('internship_postings')
+            $table->foreignUuid('application_id')
+                ->constrained('internship_applications')
                 ->cascadeOnDelete();
 
             $table->string('name');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('internship_id');
+            $table->index('application_id');
         });
     }
 

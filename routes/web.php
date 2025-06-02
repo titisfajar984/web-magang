@@ -66,14 +66,13 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::put('applications/{application}', [InternshipsController::class, 'updateApplication'])->name('apply.update');
     Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
     Route::get('tasks/create', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::get('tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-    Route::get('submissions/{submission}', [TaskController::class, 'viewSubmission'])
-        ->name('tasks.view-submission');
+    Route::patch('tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
+    Route::get('submissions/{submission}', [TaskController::class, 'viewSubmission'])->name('tasks.view-submission');
     Route::put('submissions/{submission}/review', [TaskController::class, 'reviewSubmission'])->name('tasks.review-submission');
     Route::resource('logbooks', LogbookController::class)->only(['index', 'show']);
     Route::resource('finalreports', FinalReportController::class);

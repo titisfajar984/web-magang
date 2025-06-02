@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create('id_ID');
 
         $roles = ['admin', 'company', 'participant'];
 
@@ -21,12 +21,13 @@ class UserSeeder extends Seeder
             for ($i = 1; $i <= $count; $i++) {
                 User::create([
                     'id' => Str::uuid(),
-                    'name' => $faker->name, // Nama lengkap random
+                    'name' => $faker->name,
                     'email' => strtolower($role . $i . '@example.com'),
                     'password' => Hash::make('password'),
                     'role' => $role,
                 ]);
             }
         }
+
     }
 }

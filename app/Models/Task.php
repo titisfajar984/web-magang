@@ -11,7 +11,7 @@ class Task extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'internship_id',
+        'application_id',
         'name',
         'description',
         'deadline',
@@ -23,19 +23,9 @@ class Task extends Model
         'deadline' => 'date'
     ];
 
-    public function internship()
-    {
-        return $this->belongsTo(InternshipPosting::class);
-    }
-
     public function application()
     {
         return $this->belongsTo(InternshipApplication::class, 'application_id');
-    }
-
-    public function participant()
-    {
-        return $this->belongsTo(ParticipantProfile::class, 'participant_id');
     }
 
     public function submissions()

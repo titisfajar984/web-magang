@@ -43,7 +43,7 @@
                             <div class="font-medium text-gray-900">{{ $task->name }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-gray-900">{{ $task->internship->title }}</div>
+                            <div class="text-gray-900">{{ $task->application->internship->title}}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-gray-900">{{ Carbon\Carbon::parse($task->deadline)->format('d M Y') }}</div>

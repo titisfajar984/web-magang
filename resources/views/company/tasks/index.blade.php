@@ -3,45 +3,46 @@
 @section('title', 'Kelola Tugas')
 
 @section('content')
-<div class="container mx-auto max-w-6xl px-4 py-6">
+<div class="container mx-auto max-w-6xl">
   <!-- Header Section -->
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
     <div>
       <h1 class="text-2xl font-bold text-gray-900">
         Kelola Tugas Magang
-        @if(isset($participant))
+        @isset($participant)
           - <span class="font-normal">{{ $participant->user->name }}</span>
-        @endif
+        @endisset
       </h1>
       <p class="text-gray-500 mt-1">
-        @if(isset($participant))
+        @isset($participant)
           Daftar tugas untuk {{ $participant->user->name }}
         @else
           Daftar semua tugas magang di perusahaan Anda
-        @endif
+        @endisset
       </p>
     </div>
 
-    @unless(isset($participant))
     <div class="flex gap-3">
       <a href="{{ route('company.participants.index') }}"
          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
         <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
         Kembali ke Daftar Peserta
       </a>
+
+      @empty($participant)
       <a href="{{ route('company.tasks.create') }}"
          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
         <i data-feather="plus" class="w-4 h-4 mr-2"></i>
         Tambah Tugas
       </a>
+      @else
+      <a href="{{ route('company.tasks.create', ['participant_id' => $participant->id]) }}"
+         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+        Tambah Tugas
+      </a>
+      @endempty
     </div>
-    @else
-    <a href="{{ route('company.participants.index') }}"
-       class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-      <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
-      Kembali ke Daftar Peserta
-    </a>
-    @endunless
   </div>
 
   <!-- Table Section -->
@@ -64,11 +65,11 @@
                 <div class="font-medium text-gray-900">{{ $task->name }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ $task->internship->title ?? '-' }}</div>
+                <div class="text-sm text-gray-900">{{ $task->application->internship->title }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">
-                  {{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('d F Y') }}
+                  {{ $task->deadline->translatedFormat('d F Y') }}
                   @if($task->deadline->isPast() && $task->status !== 'Done')
                     <span class="ml-1 text-xs text-red-500">(Terlewat)</span>
                   @endif
@@ -127,11 +128,11 @@
           @empty
             <tr>
               <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                @if(isset($participant))
+                @isset($participant)
                   Belum ada tugas untuk {{ $participant->user->name }}.
                 @else
                   Belum ada tugas di perusahaan Anda. <a href="{{ route('company.tasks.create') }}" class="text-blue-600 hover:text-blue-800">Buat tugas pertama</a>
-                @endif
+                @endisset
               </td>
             </tr>
           @endforelse

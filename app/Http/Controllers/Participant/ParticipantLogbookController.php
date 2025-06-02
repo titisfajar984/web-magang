@@ -17,14 +17,11 @@ class ParticipantLogbookController extends Controller
             abort(404, 'Profil peserta tidak ditemukan.');
         }
 
-        // Ambil semua aplikasi magang yang diterima dan dikonfirmasi
         $applications = InternshipApplication::where('participant_id', $participant->id)
-            ->whereIn('status', ['accepted', 'confirmed'])
-            ->with('internship.company')
-            ->latest()
+            ->where('status', 'accepted')
+            ->where('result_received', true)
             ->get();
 
-        // Ambil aplikasi aktif berdasarkan request, atau default ke yang pertama
         $selectedApplicationId = $request->get('application_id') ?? $applications->first()?->id;
 
         $logbooks = Logbook::where('application_id', $selectedApplicationId)->latest()->get();
@@ -41,9 +38,8 @@ class ParticipantLogbookController extends Controller
         }
 
         $applications = InternshipApplication::where('participant_id', $participant->id)
-            ->whereIn('status', ['accepted', 'confirmed'])
-            ->with('internship.company')
-            ->latest()
+            ->where('status', 'accepted')
+            ->where('result_received', true)
             ->get();
 
         $selectedApplicationId = $request->get('application_id') ?? $applications->first()?->id;
@@ -66,7 +62,6 @@ class ParticipantLogbookController extends Controller
             abort(404, 'Profil peserta tidak ditemukan.');
         }
 
-        // Cek apakah application milik user
         $application = InternshipApplication::where('id', $request->application_id)
             ->where('participant_id', $participant->id)
             ->firstOrFail();

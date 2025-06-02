@@ -63,7 +63,7 @@
                 </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="{{ route('company.tasks.index', $app->participant_id) }}"
+                <a href="{{ route('company.tasks.index', ['participant_id' => $app->participant_id]) }}"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition h-[36px]">
                     <i data-feather="list" class="w-4 h-4 mr-1.5"></i>
                     Kelola Tugas

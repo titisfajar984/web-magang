@@ -22,12 +22,10 @@ class ParticipantTaskSubmissionController extends Controller
             abort(403, 'Profile peserta tidak ditemukan.');
         }
 
-        $internshipIds = InternshipApplication::where('participant_id', $participantId)->pluck('internship_posting_id');
+        $applicationIds = InternshipApplication::where('participant_id', $participantId)->pluck('id');
 
-        $tasks = Task::with('internship')
-            ->whereHas('application', function ($query) use ($internshipIds) {
-                $query->whereIn('internship_posting_id', $internshipIds);
-            })
+        $tasks = Task::with('application.internship')
+            ->whereIn('application_id', $applicationIds)
             ->latest()
             ->paginate(10);
 
@@ -43,10 +41,11 @@ class ParticipantTaskSubmissionController extends Controller
             abort(403, 'Profile peserta tidak ditemukan.');
         }
 
-        $task = Task::findOrFail($taskId);
+        $task = Task::with('application')->findOrFail($taskId);
 
-        $internshipIds = InternshipApplication::where('participant_id', $participantId)->pluck('internship_posting_id');
-        if (!$internshipIds->contains($task->internship_id)) {
+        $internshipPostingIds = InternshipApplication::where('participant_id', $participantId)->pluck('internship_posting_id');
+
+        if (!$internshipPostingIds->contains($task->application->internship_posting_id)) {
             abort(403, 'Anda tidak memiliki akses ke tugas ini.');
         }
 
@@ -59,7 +58,7 @@ class ParticipantTaskSubmissionController extends Controller
 
     public function show($taskId)
     {
-        $task = Task::with('internship')->findOrFail($taskId);
+        $task = Task::with('application.internship')->findOrFail($taskId);
         $submission = TaskSubmission::where('task_id', $taskId)
             ->where('user_id', Auth::id())
             ->first();

@@ -12,9 +12,8 @@ class ParticipantProfileSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create('id_ID');
 
-        // Ambil 10 user dengan role participant
         $participants = User::where('role', 'participant')->limit(10)->get();
 
         foreach ($participants as $user) {
@@ -25,8 +24,8 @@ class ParticipantProfileSeeder extends Seeder
                 'address' => $faker->address,
                 'birth_date' => $faker->date('Y-m-d', '2003-01-01'),
                 'gender' => $faker->randomElement(['male', 'female']),
-                'university' => $faker->company . ' University',
-                'study_program' => $faker->randomElement(['Computer Science', 'Business', 'Engineering', 'Design']),
+                'university' => 'Universitas ' . $faker->city,
+                'study_program' => $faker->randomElement(['Teknik Informatika', 'Manajemen Bisnis', 'Teknik Elektro', 'Desain Komunikasi Visual']),
                 'portfolio_url' => $faker->url,
                 'photo' => null,
                 'cv' => null,
@@ -35,5 +34,6 @@ class ParticipantProfileSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+
     }
 }

@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">{{ $task->name }}</h1>
-            <p class="text-gray-500 mt-1">Detail tugas dari program magang {{ $task->internship->title }}</p>
+            <p class="text-gray-500 mt-1">Detail tugas dari program magang {{ $task->application->internship->title }}</p>
         </div>
         <a href="{{ route('participant.tasks.index') }}"
            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
