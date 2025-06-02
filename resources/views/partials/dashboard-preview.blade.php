@@ -11,7 +11,7 @@
             <p class="text-white text-base lg:text-lg max-w-xl">
                 Mulai kariermu lewat magang terbaik.
             </p>
-            <a href="/lowongan" class="w-full md:w-fit text-sm sm:text-[15px] md:text-base lg:text-[17px] font-semibold text-[#4640DE] py-2 px-6 rounded-sm transition duration-300 bg-white hover:bg-[#ecebfc] focus:outline-none focus-visible:ring focus-visible:ring-[#4640DE]/50">
+            <a href="{{ route('participant.internships.index') }}" class="w-full md:w-fit text-sm sm:text-[15px] md:text-base lg:text-[17px] font-semibold text-[#4640DE] py-2 px-6 rounded-sm transition duration-300 bg-white hover:bg-[#ecebfc] focus:outline-none focus-visible:ring focus-visible:ring-[#4640DE]/50">
                 Jelajahi Lowongan
             </a>
         </div>

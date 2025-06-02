@@ -22,7 +22,7 @@
             <p class="text-base sm:text-lg md:text-[18px] lg:text-xl text-[#5F6D7E]">
                 Temukan tempat magang terbaik dan mitra perusahaan terpercaya di seluruh Indonesia. Ajukan magang dan kelola tugas dengan mudah.
             </p>
-            <a href="{{ route('login') }}" class="mx-auto md:mx-0 w-fit text-sm sm:text-[15px] md:text-base lg:text-[17px] font-semibold text-white py-2 px-6 bg-[#4640DE] rounded-sm transition duration-300 hover:bg-[#3730a3] focus:outline-none focus-visible:ring focus-visible:ring-[#4640DE]/50">
+            <a href="{{ route('participant.internships.index') }}" class="mx-auto md:mx-0 w-fit text-sm sm:text-[15px] md:text-base lg:text-[17px] font-semibold text-white py-2 px-6 bg-[#4640DE] rounded-sm transition duration-300 hover:bg-[#3730a3] focus:outline-none focus-visible:ring focus-visible:ring-[#4640DE]/50">
                 Cari Lowongan
             </a>
         </div>
