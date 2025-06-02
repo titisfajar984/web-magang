@@ -10,35 +10,58 @@ use Illuminate\Support\Facades\Storage;
 
 class ParticipantFinalReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $participant = auth()->user()->participantProfile;
         abort_if(!$participant, 404, 'Profil peserta tidak ditemukan.');
 
-        $application = InternshipApplication::where('participant_id', $participant->id)
-            ->latest()
-            ->firstOrFail();
-
-        // Ambil hanya laporan peserta ini
-        $finalReports = FinalReport::where('application_id', $application->id)
-            ->latest()
+        $applications = InternshipApplication::where('participant_id', $participant->id)
+            ->where('status', 'accepted')
+            ->where('result_received', true)
             ->get();
 
-        return view('participant.finalreports.index', compact('finalReports'));
+        $applicationIds = $applications->pluck('id')->toArray();
+
+        $selectedApplicationId = $request->input('application_id');
+
+        $query = FinalReport::whereIn('application_id', $applicationIds)->latest();
+
+        if ($selectedApplicationId && in_array($selectedApplicationId, $applicationIds)) {
+            $query->where('application_id', $selectedApplicationId);
+        }
+
+        $finalReports = $query->get();
+
+        return view('participant.finalreports.index', compact('finalReports', 'applications', 'selectedApplicationId'));
     }
 
     public function create()
     {
-        return view('participant.finalreports.create');
+        $participant = auth()->user()->participantProfile;
+        abort_if(!$participant, 404, 'Profil peserta tidak ditemukan.');
+
+        $applications = InternshipApplication::where('participant_id', $participant->id)->get();
+
+        if ($applications->isEmpty()) {
+            return redirect()->route('participant.finalreports.index')
+                ->with('error', 'Anda harus mengikuti magang terlebih dahulu sebelum membuat laporan akhir.');
+        }
+
+        return view('participant.finalreports.create', compact('applications'));
     }
 
     public function store(Request $request)
     {
+        $participant = auth()->user()->participantProfile;
+        abort_if(!$participant, 404, 'Profil peserta tidak ditemukan.');
+
         $request->validate([
+            'application_id' => 'required|exists:internship_applications,id',
             'description' => 'required|string|max:255',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-        ],
-        [
+        ], [
+            'application_id.required' => 'Pilih magang terlebih dahulu.',
+            'application_id.exists' => 'Pilihan magang tidak valid.',
             'description.required' => 'Deskripsi wajib diisi.',
             'description.max' => 'Deskripsi tidak boleh lebih dari 255 karakter.',
             'file.file' => 'File harus berupa file yang valid.',
@@ -46,12 +69,17 @@ class ParticipantFinalReportController extends Controller
             'file.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
-        $participant = auth()->user()->participantProfile;
-        abort_if(!$participant, 404, 'Profil peserta tidak ditemukan.');
-
         $application = InternshipApplication::where('participant_id', $participant->id)
-            ->latest()
+            ->where('id', $request->application_id)
             ->firstOrFail();
+
+        $exists = FinalReport::where('application_id', $application->id)->exists();
+
+        if ($exists) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['application_id' => 'Anda sudah membuat laporan untuk magang ini. Tidak bisa membuat laporan duplikat.']);
+        }
 
         $filePath = null;
         if ($request->hasFile('file')) {
@@ -69,6 +97,8 @@ class ParticipantFinalReportController extends Controller
         return redirect()->route('participant.finalreports.index')
             ->with('success', 'Laporan akhir berhasil dikirim.');
     }
+
+
 
     public function show(string $id)
     {

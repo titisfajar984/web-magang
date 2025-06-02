@@ -44,6 +44,17 @@
 
       <div class="grid grid-cols-1 gap-6">
         <div>
+            <label for="application_id" class="block text-sm font-medium text-gray-700">Magang *</label>
+            <select name="application_id" id="application_id" required
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                @foreach($applications as $app)
+                    <option value="{{ $app->id }}" {{ old('application_id') == $app->id ? 'selected' : '' }}>
+                        {{ $app->internship->title }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div>
           <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal *</label>
           <input type="date" name="tanggal" id="tanggal" required
                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"

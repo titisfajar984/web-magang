@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Participant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Logbook;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Models\InternshipApplication;
+use Illuminate\Http\Request;
 
 class ParticipantLogbookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $participant = auth()->user()->participantProfile;
 
@@ -18,33 +17,47 @@ class ParticipantLogbookController extends Controller
             abort(404, 'Profil peserta tidak ditemukan.');
         }
 
-        $application = InternshipApplication::where('participant_id', $participant->id)
+        // Ambil semua aplikasi magang yang diterima dan dikonfirmasi
+        $applications = InternshipApplication::where('participant_id', $participant->id)
+            ->whereIn('status', ['accepted', 'confirmed'])
+            ->with('internship.company')
             ->latest()
-            ->firstOrFail();
+            ->get();
 
-        $logbooks = Logbook::where('application_id', $application->id)->latest()->get();
+        // Ambil aplikasi aktif berdasarkan request, atau default ke yang pertama
+        $selectedApplicationId = $request->get('application_id') ?? $applications->first()?->id;
 
-        return view('participant.logbooks.index', compact('logbooks'));
+        $logbooks = Logbook::where('application_id', $selectedApplicationId)->latest()->get();
+
+        return view('participant.logbooks.index', compact('applications', 'selectedApplicationId', 'logbooks'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('participant.logbooks.create');
+        $participant = auth()->user()->participantProfile;
+
+        if (!$participant) {
+            abort(404, 'Profil peserta tidak ditemukan.');
+        }
+
+        $applications = InternshipApplication::where('participant_id', $participant->id)
+            ->whereIn('status', ['accepted', 'confirmed'])
+            ->with('internship.company')
+            ->latest()
+            ->get();
+
+        $selectedApplicationId = $request->get('application_id') ?? $applications->first()?->id;
+
+        return view('participant.logbooks.create', compact('applications', 'selectedApplicationId'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'application_id' => 'required|exists:internship_applications,id',
             'tanggal' => 'required|date',
             'deskripsi' => 'required|string|max:255',
             'constraint' => 'nullable|string|max:255',
-        ],
-        [
-            'tanggal.required' => 'Tanggal wajib diisi.',
-            'tanggal.date' => 'Tanggal harus berupa tanggal yang valid.',
-            'deskripsi.required' => 'Deskripsi wajib diisi.',
-            'deskripsi.max' => 'Deskripsi tidak boleh lebih dari 255 karakter.',
-            'constraint.max' => 'Constraint tidak boleh lebih dari 255 karakter.',
         ]);
 
         $participant = auth()->user()->participantProfile;
@@ -53,8 +66,9 @@ class ParticipantLogbookController extends Controller
             abort(404, 'Profil peserta tidak ditemukan.');
         }
 
-        $application = InternshipApplication::where('participant_id', $participant->id)
-            ->latest()
+        // Cek apakah application milik user
+        $application = InternshipApplication::where('id', $request->application_id)
+            ->where('participant_id', $participant->id)
             ->firstOrFail();
 
         Logbook::create([
@@ -64,36 +78,38 @@ class ParticipantLogbookController extends Controller
             'constraint' => $request->constraint,
         ]);
 
-
-        return redirect()->route('participant.logbooks.index')->with('success', 'Logbook berhasil ditambahkan.');
+        return redirect()->route('participant.logbooks.index', ['application_id' => $application->id])
+            ->with('success', 'Logbook berhasil ditambahkan.');
     }
 
     public function edit(Logbook $logbook)
     {
+        $this->authorize('update', $logbook);
         return view('participant.logbooks.edit', compact('logbook'));
     }
 
     public function update(Request $request, Logbook $logbook)
     {
+        $this->authorize('update', $logbook);
+
         $request->validate([
             'tanggal' => 'required|date',
             'deskripsi' => 'required|string|max:255',
             'constraint' => 'nullable|string|max:255',
         ]);
 
-        $logbook->update([
-            'tanggal' => $request->tanggal,
-            'deskripsi' => $request->deskripsi,
-            'constraint' => $request->constraint,
-        ]);
+        $logbook->update($request->only(['tanggal', 'deskripsi', 'constraint']));
 
-        return redirect()->route('participant.logbooks.index')->with('success', 'Logbook berhasil diperbarui.');
+        return redirect()->route('participant.logbooks.index', ['application_id' => $logbook->application_id])
+            ->with('success', 'Logbook berhasil diperbarui.');
     }
-
 
     public function destroy(Logbook $logbook)
     {
+        $this->authorize('delete', $logbook);
         $logbook->delete();
         return back()->with('success', 'Logbook berhasil dihapus.');
     }
 }
+
+

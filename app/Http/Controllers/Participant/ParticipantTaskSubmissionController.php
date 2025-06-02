@@ -25,7 +25,9 @@ class ParticipantTaskSubmissionController extends Controller
         $internshipIds = InternshipApplication::where('participant_id', $participantId)->pluck('internship_posting_id');
 
         $tasks = Task::with('internship')
-            ->whereIn('internship_id', $internshipIds)
+            ->whereHas('application', function ($query) use ($internshipIds) {
+                $query->whereIn('internship_posting_id', $internshipIds);
+            })
             ->latest()
             ->paginate(10);
 
