@@ -14,7 +14,7 @@
 <body class="bg-gray-100">
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <aside id="menu-navigation" class="h-full bg-white shadow-lg transition-all duration-300" data-open="false">
+    <aside id="menu-navigation" class="h-full bg-white shadow-lg transition-all duration-300" data-open="true">
       <div class="p-6 flex gap-x-4 items-center justify-between">
         <div class="flex gap-x-2 items-center">
           <img src="{{ asset('assets/img/Logo 2.png') }}" alt="Logo">
