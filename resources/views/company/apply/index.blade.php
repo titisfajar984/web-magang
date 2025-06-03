@@ -53,15 +53,15 @@
                   $statusKey = strtolower($application->status);
 
                   $statusClasses = [
-                    'pending'  => 'bg-yellow-100 text-yellow-800',
-                    'accepted' => 'bg-green-100 text-green-800',
-                    'rejected' => 'bg-red-100 text-red-800',
+                    'Pending'  => 'bg-yellow-100 text-yellow-800',
+                    'Accepted' => 'bg-green-100 text-green-800',
+                    'Rejected' => 'bg-red-100 text-red-800',
                   ];
 
                   $statusTexts = [
-                    'pending'  => 'Menunggu',
-                    'accepted' => 'Diterima',
-                    'rejected' => 'Ditolak',
+                    'Pending'  => 'Menunggu',
+                    'Accepted' => 'Diterima',
+                    'Rejected' => 'Ditolak',
                   ];
 
                   if ($application->status === 'Accepted' && !empty($application->result_received)) {
@@ -92,9 +92,9 @@
                     @method('PUT')
                     <select name="status" onchange="this.form.submit()"
                       class="text-sm h-[36px] border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                      <option value="pending" {{ $application->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                      <option value="accepted" {{ $application->status === 'accepted' ? 'selected' : '' }}>Diterima</option>
-                      <option value="rejected" {{ $application->status === 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                      <option value="pending" {{ $application->status === 'Pending' ? 'selected' : '' }}>Pending</option>
+                      <option value="accepted" {{ $application->status === 'Accepted' ? 'selected' : '' }}>Diterima</option>
+                      <option value="rejected" {{ $application->status === 'Rejected' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                   </form>
                 </div>

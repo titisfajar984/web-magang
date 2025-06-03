@@ -38,6 +38,7 @@
             ['route' => 'admin.index',   'icon' => 'home',      'label' => 'Dashboard'],
             ['route' => 'admin.users.index',   'icon' => 'users',     'label' => 'Pengguna'],
             ['route' => 'admin.company.index','icon' => 'briefcase','label' => 'Perusahaan'],
+            ['route' => 'admin.participants.index','icon' => 'user-check','label' => 'Peserta'],
           ];
         @endphp
 

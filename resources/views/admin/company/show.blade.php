@@ -1,16 +1,16 @@
 @extends('layouts.admin')
-@section('title', 'Company Details')
+@section('title', 'Detail Perusahaan')
 
 @section('content')
 <div class="container mx-auto max-w-3xl">
   <div class="flex justify-between items-center mb-6">
     <div>
-      <h3 class="text-xl font-semibold text-gray-800">Company Details</h3>
-      <p class="text-gray-500">View detailed information about this company</p>
+      <h3 class="text-xl font-semibold text-gray-800">Detail Perusahaan</h3>
+      <p class="text-gray-500">Lihat informasi rinci tentang perusahaan ini</p>
     </div>
     <a href="{{ route('admin.company.index') }}"
        class="text-gray-500 hover:text-gray-700 inline-flex items-center">
-      <i data-feather="arrow-left" class="w-5 h-5 mr-1"></i> Back
+      <i data-feather="arrow-left" class="w-5 h-5 mr-1"></i> Kembali
     </a>
   </div>
 

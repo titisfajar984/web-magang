@@ -83,7 +83,7 @@ class ParticipantIntershipsController extends Controller
             'id' => (string) Str::uuid(),
             'participant_id' => $participantProfile->id,
             'internship_posting_id' => $id,
-            'status' => 'pending',
+            'status' => 'Pending',
             'tanggal' => now(),
         ]);
 
@@ -144,7 +144,7 @@ class ParticipantIntershipsController extends Controller
                     'participant_id' => $participant->id,
                 ])->firstOrFail();
 
-        if ($app->status !== 'accepted') {
+        if ($app->status !== 'Accepted') {
             return back()->with('error', 'Hanya lamaran yang Diterima yang bisa dikonfirmasi.');
         }
 

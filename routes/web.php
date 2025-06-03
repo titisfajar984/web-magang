@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\ParticipantUserController;
 use App\Http\Controllers\Company\InternshipPostingsController;
 use App\Http\Controllers\Company\InternshipsController;
 use App\Http\Controllers\Company\ProfileController;
@@ -54,6 +55,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/index', [DashboardController::class, 'index'])->name('index');
     Route::resource('users', UserController::class);
     Route::resource('company', CompanyController::class);
+    Route::resource('participants', ParticipantUserController::class);
+    Route::get('admin/participants/export', [ParticipantUserController::class, 'export'])->name('participants.export');
 });
 
 Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')->group(function () {
@@ -74,6 +77,7 @@ Route::middleware(['auth', 'role:company'])->prefix('company')->name('company.')
     Route::patch('tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
     Route::get('submissions/{submission}', [TaskController::class, 'viewSubmission'])->name('tasks.view-submission');
     Route::put('submissions/{submission}/review', [TaskController::class, 'reviewSubmission'])->name('tasks.review-submission');
+    Route::get('logbooks/export', [LogbookController::class, 'export'])->name('logbooks.export');
     Route::resource('logbooks', LogbookController::class)->only(['index', 'show']);
     Route::resource('finalreports', FinalReportController::class);
     Route::get('certificates/create/{participant}', [CertificateController::class, 'create'])->name('certificates.create');

@@ -8,6 +8,9 @@ use App\Models\ParticipantProfile;
 use App\Models\InternshipApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogbookController extends Controller
 {
@@ -40,9 +43,58 @@ class LogbookController extends Controller
     public function show($id)
     {
         $logbook = Logbook::with('application.participant.user')->findOrFail($id);
-
         $participant = $logbook->application->participant ?? null;
 
         return view('company.logbooks.show', compact('logbook', 'participant'));
+    }
+
+    public function export(Request $request)
+    {
+        $participantId = $request->query('participant_id');
+
+        abort_unless($participantId, Response::HTTP_BAD_REQUEST, 'Participant ID wajib diisi');
+
+        $participant = ParticipantProfile::with('user')->findOrFail($participantId);
+
+        $logbooks = Logbook::with('application.participant.user')
+            ->whereHas('application', fn ($q) => $q->where('participant_id', $participantId))
+            ->orderBy('tanggal', 'desc')
+            ->get()
+            ->map(function ($logbook) {
+                return [
+                    'Nama Peserta' => $logbook->application->participant->user->name ?? '-',
+                    'Tanggal'      => $logbook->tanggal->format('Y-m-d'),
+                    'Hari'         => $logbook->tanggal->translatedFormat('l'),
+                    'Deskripsi'    => $logbook->deskripsi ?? '-',
+                    'Kendala'      => $logbook->constraint ?? '-',
+                ];
+            });
+
+        $fileName = 'logbook_' . str_replace(' ', '_', strtolower($participant->user->name)) . '.xlsx';
+
+        return Excel::download(new class($logbooks) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            protected $data;
+
+            public function __construct(Collection $data)
+            {
+                $this->data = $data;
+            }
+
+            public function collection(): Collection
+            {
+                return $this->data;
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'Nama Peserta',
+                    'Tanggal',
+                    'Hari',
+                    'Deskripsi',
+                    'Kendala',
+                ];
+            }
+        }, $fileName);
     }
 }
