@@ -48,7 +48,7 @@
     }
     </style>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    @vite('resources/css/app.css')
 
     <script type="application/ld+json">
     {

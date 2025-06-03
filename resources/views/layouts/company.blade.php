@@ -6,7 +6,7 @@
   <title>@yield('title') - {{ config('app.name', 'Magang Berdampak') }}</title>
 
   <!-- CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  @vite('resources/css/app.css')
   <link href="https://unpkg.com/flowbite@1.7.0/dist/flowbite.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>body { font-family: 'Poppins', sans-serif; }</style>
