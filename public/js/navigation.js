@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	const menuNavigation = document.getElementById('menu-navigation');
 	const menuClose = document.getElementById('menu-close');
 
+	if (window.innerWidth < 640) menuNavigation.dataset.open = "false";
+
 	const isMenuOpen = () => menuNavigation.dataset.open === "true";
 
 	const updateNavigation = () => {
@@ -33,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	window.addEventListener('resize', () => {
+		if (window.innerWidth < 640) menuNavigation.dataset.open = "false";
 		updateNavigation();
 	});
 
