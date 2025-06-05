@@ -7,7 +7,7 @@
   <div class="flex justify-between items-center mb-6">
     <h3 class="text-xl font-semibold text-gray-800">Daftar Pengguna</h3>
     <a href="{{ route('admin.users.create') }}"
-       class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm rounded-lg shadow-md hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 group">
+       class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-md hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 group">
       <i data-feather="plus-circle" class="w-5 h-5 transition-transform group-hover:rotate-90"></i>
       <span>Tambah Pengguna</span>
     </a>

@@ -43,7 +43,7 @@
                     Batalkan
                 </a>
                 <button type="submit"
-                        class="px-6 py-3 bg-gradient-to-br from-blue-600 to-teal-600 text-white rounded-xl hover:shadow-lg transition-all font-medium flex-1">
+                        class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:shadow-lg transition-all font-medium flex-1">
                     Konfirmasi Penerimaan
                 </button>
             </div>

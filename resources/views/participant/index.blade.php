@@ -64,21 +64,21 @@
             </a>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full whitespace-nowrap">
                 <thead>
                     <tr class="text-left text-sm text-gray-500 border-b">
-                        <th class="pb-3">Perusahaan</th>
-                        <th class="pb-3">Posisi</th>
-                        <th class="pb-3">Status</th>
-                        <th class="pb-3">Tanggal</th>
+                        <th class="p-3">Perusahaan</th>
+                        <th class="p-3">Posisi</th>
+                        <th class="p-3">Status</th>
+                        <th class="p-3">Tanggal</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($latest['applications'] as $application)
                     <tr class="hover:bg-gray-50">
-                        <td class="py-3">{{ $application->internship->company->name }}</td>
-                        <td>{{ $application->internship->title }}</td>
-                        <td>
+                        <td class="p-3">{{ $application->internship->company->name }}</td>
+                        <td class="p-3">{{ $application->internship->title }}</td>
+                        <td class="p-3">
                             @php
                                 $statusKey = strtolower($application->status);
 
@@ -107,7 +107,7 @@
                                 {{ $labelText }}
                             </span>
                         </td>
-                        <td class="text-sm text-gray-500">
+                        <td class="p-3 text-sm text-gray-500">
                             {{ $application->created_at->format('d M Y') }}
                         </td>
                     </tr>
@@ -125,9 +125,9 @@
                 Lihat Semua →
             </a>
         </div>
-        <div class="space-y-4">
+        <div class="space-y-4 overflow-x-auto">
             @foreach($latest['tasks'] as $task)
-            <div class="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg border">
+            <div class="flex items-center justify-between whitespace-nowrap p-4 hover:bg-gray-50 rounded-lg border w-fit">
                 <div>
                     <h4 class="font-medium">{{ $task->title }}</h4>
                     <p class="text-sm text-gray-500">

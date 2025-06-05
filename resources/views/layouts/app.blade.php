@@ -24,8 +24,8 @@
     <meta name="twitter:image" content="@yield('meta_image', asset('img/og-magang-berdampak.png'))">
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/img/logo-magang-berdampak.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/logo-magang-berdampak.png') }}">
 
     <style>
     #main-header {

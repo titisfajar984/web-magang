@@ -50,7 +50,7 @@
             <form action="{{ route('participant.internships.apply', $intern->id) }}" method="POST" class="flex-1">
                 @csrf
                 <button type="submit"
-                        class="w-full px-6 py-3 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all font-medium">
+                        class="w-full px-6 py-3 bg-blue-600 text-white rounded-xl hover:shadow-lg transition-all font-medium">
                     Ya, Daftar Sekarang
                 </button>
             </form>

@@ -40,13 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	document.addEventListener('click', (e) => {
-		if (
-			isMenuOpen() &&
-			!menuNavigation.contains(e.target) &&
-			!menuToggle.contains(e.target)
-		) {
-			menuNavigation.dataset.open = "false";
-			updateNavigation();
+		if (window.innerWidth < 640) {
+			if (
+				isMenuOpen() &&
+				!menuNavigation.contains(e.target) &&
+				!menuToggle.contains(e.target)
+			) {
+				menuNavigation.dataset.open = "false";
+				updateNavigation();
+			}
 		}
 	});
 

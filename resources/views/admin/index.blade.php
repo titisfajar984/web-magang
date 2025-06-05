@@ -62,7 +62,7 @@
         <div class="bg-white p-6 rounded-lg shadow-sm">
             <h3 class="text-lg font-semibold mb-4">Magang Terbaru</h3>
             <div class="overflow-x-auto">
-                <table class="w-full table-auto border-collapse">
+                <table class="min-w-full divide-y divide-gray-200 whitespace-nowrap">
                     <thead>
                         <tr class="text-left text-sm text-gray-500 border-b border-gray-300">
                             <th class="pb-3 px-4 min-w-[120px]">Posisi</th>
@@ -91,7 +91,7 @@
         <div class="bg-white p-6 rounded-lg shadow-sm">
             <h3 class="text-lg font-semibold mb-4">Lamaran Terbaru</h3>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="min-w-full divide-y divide-gray-200 whitespace-nowrap">
                     <thead>
                         <tr class="text-left text-sm text-gray-500 border-b">
                             <th class="pb-3">Peserta</th>
