@@ -70,7 +70,7 @@ class ParticipantTaskSubmissionController extends Controller
     {
         $request->validate([
             'submission_text' => 'required|string',
-            'attachment_file' => 'nullable|file|max:5120|mimes:pdf,doc,docx,jpg,png',
+            'attachment_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
         ],
         [
             'submission_text.required' => 'Teks jawaban wajib diisi.',
@@ -124,7 +124,7 @@ class ParticipantTaskSubmissionController extends Controller
 
         $request->validate([
             'submission_text' => 'required|string',
-            'attachment_file' => 'nullable|file|max:5120|mimes:pdf,doc,docx,jpg,png',
+            'attachment_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:5120',
         ]);
 
         $deadline = Carbon::parse($submission->task->deadline)->setTimezone(config('app.timezone'));

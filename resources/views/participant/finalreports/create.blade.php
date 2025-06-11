@@ -20,7 +20,6 @@
             @csrf
 
             <div class="space-y-6">
-                <!-- Pilih Magang -->
                 <div>
                     <label for="application_id" class="block text-sm font-medium text-gray-700 mb-2">
                         Pilih Magang <span class="text-red-500">*</span>
@@ -29,7 +28,7 @@
                         class="block w-full border border-gray-300 rounded-lg px-4 py-3
                                focus:border-blue-500 focus:ring-blue-500
                                @error('application_id') border-red-500 @enderror">
-                        <option value="">-- Pilih Magang --</option>
+                        <option value="">Pilih Magang</option>
                         @foreach($applications as $app)
                             <option value="{{ $app->id }}" {{ old('application_id') == $app->id ? 'selected' : '' }}>
                                 {{ $app->internship->title }}
@@ -84,9 +83,9 @@
                     @enderror
                 </div>
 
-                <div class="pt-6">
+                <div class="flex justify-end space-x-3 pt-6">
                     <button type="submit"
-                        class="w-full inline-flex justify-center items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition">
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <i data-feather="send" class="w-5 h-5 mr-2"></i> Kirim Laporan
                     </button>
                 </div>

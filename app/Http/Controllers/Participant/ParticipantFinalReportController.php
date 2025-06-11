@@ -40,7 +40,10 @@ class ParticipantFinalReportController extends Controller
         $participant = auth()->user()->participantProfile;
         abort_if(!$participant, 404, 'Profil peserta tidak ditemukan.');
 
-        $applications = InternshipApplication::where('participant_id', $participant->id)->get();
+        $applications = InternshipApplication::where('participant_id', $participant->id)
+            ->where('status', 'accepted')
+            ->where('result_received', true)
+            ->get();
 
         if ($applications->isEmpty()) {
             return redirect()->route('participant.finalreports.index')

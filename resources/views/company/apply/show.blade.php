@@ -129,15 +129,15 @@
           </h4>
           <div class="space-y-3">
             <div>
-              <p class="text-sm text-gray-500">Universitas</p>
+              <p class="text-sm text-gray-500">Kampus/Sekolah</p>
               <p class="text-gray-900">{{ $application->participant->university ?? '-' }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">Program Studi</p>
+              <p class="text-sm text-gray-500">Program Studi/Jurusan</p>
               <p class="text-gray-900">{{ $application->participant->study_program ?? '-' }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">IPK</p>
+              <p class="text-sm text-gray-500">IPK/Nilai Rata-rata</p>
               <p class="text-gray-900">{{ $application->participant->gpa ?? '-' }}</p>
             </div>
           </div>

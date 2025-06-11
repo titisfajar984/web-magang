@@ -79,7 +79,7 @@
                 </div>
 
                 <div>
-                    <label for="university" class="block mb-2 text-sm font-medium text-gray-900">Universitas</label>
+                    <label for="university" class="block mb-2 text-sm font-medium text-gray-900">Kampus/Sekolah</label>
                     <input type="text" id="university" name="university"
                         value="{{ old('university', $participant->university) }}"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -89,7 +89,7 @@
                 </div>
 
                 <div>
-                    <label for="study_program" class="block mb-2 text-sm font-medium text-gray-900">Program Studi</label>
+                    <label for="study_program" class="block mb-2 text-sm font-medium text-gray-900">Program Studi/Jurusan</label>
                     <input type="text" id="study_program" name="study_program"
                         value="{{ old('study_program', $participant->study_program) }}"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -99,7 +99,7 @@
                 </div>
 
                 <div>
-                    <label for="gpa" class="block mb-2 text-sm font-medium text-gray-900">IPK</label>
+                    <label for="gpa" class="block mb-2 text-sm font-medium text-gray-900">IPK/Nilai Rata-rata</label>
                     <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4"
                         value="{{ old('gpa', $participant->gpa) }}"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">

@@ -22,14 +22,11 @@
 
   <div class="bg-white shadow rounded-lg p-6">
     @if($application->certificate)
-      <!-- Tampilan jika sertifikat sudah ada -->
-      <div class="space-y-6">
-        @if(session('success'))
-          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-            {{ session('success') }}
-          </div>
-        @endif
-
+    <div class="mb-6 p-4 rounded-md bg-yellow-50 border border-yellow-300 text-yellow-800 flex items-start">
+        <i data-feather="info" class="w-5 h-5 mr-3 text-yellow-500 mt-1"></i>
+        <div>
+            <p class="font-medium">Sertifikat sudah diunggah.</p></div>
+        </div>
         <div class="grid grid-cols-1 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Peserta</label>
@@ -66,7 +63,12 @@
         </div>
       </div>
     @else
-      <!-- Tampilan form upload jika belum ada sertifikat -->
+    <div class="mb-6 p-4 rounded-md bg-yellow-50 border border-yellow-300 text-yellow-800 flex items-start">
+        <i data-feather="info" class="w-5 h-5 mr-3 text-yellow-500 mt-1"></i>
+        <div>
+            <p class="text-sm">Sertifikat hanya bisa diunggah satu kali dan tidak dapat diubah. Pastikan file yang diunggah sudah benar.</p>
+        </div>
+    </div>
       <form method="POST" action="{{ route('company.certificates.store', $application->participant_id) }}" class="space-y-6" enctype="multipart/form-data">
         @csrf
 
